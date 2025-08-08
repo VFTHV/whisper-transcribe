@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { FiCheck } from "react-icons/fi";
 import { MdContentCopy } from "react-icons/md";
+import { TranscriptionEditor } from "./components";
 import "./App.css";
 
 interface TranscriptionResult {
@@ -212,12 +213,9 @@ function App() {
                 </button>
               </div>
             </div>
-            <textarea
-              className="transcription-text"
+            <TranscriptionEditor
               value={transcription}
-              onChange={(e) => setTranscription(e.target.value)}
-              placeholder="Transcription will appear here..."
-              rows={4}
+              onChange={setTranscription}
             />
           </div>
         )}
