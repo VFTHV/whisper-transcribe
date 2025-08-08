@@ -26,7 +26,7 @@ export function RecordingControls({
       await navigator.clipboard.writeText(newTranscription);
       // Show copied feedback
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 100); // Brief trigger
+      setTimeout(() => setIsCopied(false), 2000); // Brief trigger
     } catch (err) {
       console.error("Failed to auto-copy to clipboard:", err);
     }
