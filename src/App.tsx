@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { FiCopy, FiCheck } from "react-icons/fi";
 import "./App.css";
 
 interface TranscriptionResult {
@@ -12,6 +13,7 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [transcription, setTranscription] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [isCopied, setIsCopied] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -78,6 +80,14 @@ function App() {
 
       if (result.success) {
         setTranscription(result.transcription);
+        // Auto-copy to clipboard
+        try {
+          await navigator.clipboard.writeText(result.transcription);
+          setIsCopied(true);
+          setTimeout(() => setIsCopied(false), 2000);
+        } catch (err) {
+          console.error("Failed to auto-copy to clipboard:", err);
+        }
       } else {
         setError("Transcription failed");
       }
@@ -89,9 +99,20 @@ function App() {
     }
   };
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(transcription);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+    } catch (err) {
+      console.error("Failed to copy to clipboard:", err);
+    }
+  };
+
   const clearTranscription = () => {
     setTranscription("");
     setError("");
+    setIsCopied(false);
   };
 
   return (
@@ -136,9 +157,18 @@ function App() {
           <div className="transcription-section">
             <div className="transcription-header">
               <h3>📝 Transcription</h3>
-              <button className="clear-button" onClick={clearTranscription}>
-                Clear
-              </button>
+              <div className="transcription-actions">
+                <button
+                  className={`copy-button ${isCopied ? "copied" : ""}`}
+                  onClick={copyToClipboard}
+                  title={isCopied ? "Copied!" : "Copy to clipboard"}
+                >
+                  {isCopied ? <FiCheck size={16} /> : <FiCopy size={16} />}
+                </button>
+                <button className="clear-button" onClick={clearTranscription}>
+                  Clear
+                </button>
+              </div>
             </div>
             <div className="transcription-text">{transcription}</div>
           </div>
