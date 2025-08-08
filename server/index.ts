@@ -77,6 +77,8 @@ app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
       file: audioFile,
       model: "whisper-1",
       response_format: "json",
+      prompt:
+        "This transcription is about React code with TypeScript, JavaScript, sometimes using reselect library, async selector kit library, and also having Express server. The content includes code snippets, function names, variable names, and programming terminology.",
     });
 
     // Clean up the uploaded file
