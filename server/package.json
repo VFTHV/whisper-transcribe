@@ -1,0 +1,25 @@
+{
+  "name": "whisper-transcribe-server",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "multer": "^2.0.2",
+    "openai": "^5.12.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^24.2.1",
+    "tsx": "^4.19.2",
+    "typescript": "~5.8.3"
+  }
+}
