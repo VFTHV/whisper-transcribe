@@ -282,6 +282,21 @@ h1 {
   text-align: left;
   min-height: 60px;
   white-space: pre-wrap;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+  width: 100%;
+}
+
+.transcription-text:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.transcription-text::placeholder {
+  color: #a0aec0;
+  font-style: italic;
 }
 
 .instructions {
@@ -335,5 +350,6 @@ h1 {
 
   .transcription-text {
     font-size: 1rem;
+    padding: 15px;
   }
 }

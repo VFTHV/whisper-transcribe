@@ -212,7 +212,13 @@ function App() {
                 </button>
               </div>
             </div>
-            <div className="transcription-text">{transcription}</div>
+            <textarea
+              className="transcription-text"
+              value={transcription}
+              onChange={(e) => setTranscription(e.target.value)}
+              placeholder="Transcription will appear here..."
+              rows={4}
+            />
           </div>
         )}
 
