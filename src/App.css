@@ -54,6 +54,14 @@ h1 {
   margin-bottom: 30px;
 }
 
+.recording-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .record-button {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
@@ -86,6 +94,30 @@ h1 {
   background: linear-gradient(135deg, #e53e3e, #c53030);
   box-shadow: 0 8px 20px rgba(229, 62, 62, 0.3);
   animation: pulse 2s infinite;
+}
+
+.cancel-button {
+  background: linear-gradient(135deg, #718096, #4a5568);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(113, 128, 150, 0.3);
+}
+
+.cancel-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4a5568, #2d3748);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(113, 128, 150, 0.4);
+}
+
+.cancel-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .recording-indicator {
@@ -290,6 +322,15 @@ h1 {
   .record-button {
     padding: 14px 28px;
     font-size: 1rem;
+  }
+
+  .cancel-button {
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
+
+  .recording-buttons {
+    gap: 10px;
   }
 
   .transcription-text {

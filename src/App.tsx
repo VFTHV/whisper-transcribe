@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
-import { FiCopy, FiCheck } from "react-icons/fi";
+import { FiCheck } from "react-icons/fi";
+import { MdContentCopy } from "react-icons/md";
 import "./App.css";
 
 interface TranscriptionResult {
@@ -16,17 +17,22 @@ function App() {
   const [isCopied, setIsCopied] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const shouldProcessRef = useRef<boolean>(false);
 
   const startRecording = async () => {
     try {
       setError("");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: "audio/webm;codecs=opus",
       });
 
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
+      shouldProcessRef.current = false; // Reset the flag
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -35,11 +41,14 @@ function App() {
       };
 
       mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, {
-          type: "audio/webm",
-        });
-        await sendAudioToServer(audioBlob);
-        stream.getTracks().forEach((track) => track.stop());
+        // Only process audio if we're not canceling
+        if (shouldProcessRef.current) {
+          const audioBlob = new Blob(audioChunksRef.current, {
+            type: "audio/webm",
+          });
+          await sendAudioToServer(audioBlob);
+        }
+        stopStream();
       };
 
       mediaRecorder.start();
@@ -52,10 +61,27 @@ function App() {
     }
   };
 
+  const stopStream = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+  };
+
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
+      shouldProcessRef.current = true; // Set flag to process audio
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+    }
+  };
+
+  const cancelRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      shouldProcessRef.current = false; // Set flag to NOT process audio
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      audioChunksRef.current = []; // Clear the audio chunks
     }
   };
 
@@ -124,20 +150,32 @@ function App() {
         </p>
 
         <div className="recording-section">
-          <button
-            className={`record-button ${isRecording ? "recording" : ""}`}
-            onClick={isRecording ? stopRecording : startRecording}
-            disabled={isProcessing}
-          >
-            {isRecording ? (
-              <>
-                <span className="recording-indicator"></span>
-                Stop Recording
-              </>
-            ) : (
-              <>🎤 Start Recording</>
+          <div className="recording-buttons">
+            <button
+              className={`record-button ${isRecording ? "recording" : ""}`}
+              onClick={isRecording ? stopRecording : startRecording}
+              disabled={isProcessing}
+            >
+              {isRecording ? (
+                <>
+                  <span className="recording-indicator"></span>
+                  Stop Recording
+                </>
+              ) : (
+                <>🎤 Start Recording</>
+              )}
+            </button>
+
+            {isRecording && (
+              <button
+                className="cancel-button"
+                onClick={cancelRecording}
+                disabled={isProcessing}
+              >
+                ❌ Cancel
+              </button>
             )}
-          </button>
+          </div>
 
           {isProcessing && (
             <div className="processing">
@@ -163,7 +201,11 @@ function App() {
                   onClick={copyToClipboard}
                   title={isCopied ? "Copied!" : "Copy to clipboard"}
                 >
-                  {isCopied ? <FiCheck size={16} /> : <FiCopy size={16} />}
+                  {isCopied ? (
+                    <FiCheck size={16} />
+                  ) : (
+                    <MdContentCopy size={16} />
+                  )}
                 </button>
                 <button className="clear-button" onClick={clearTranscription}>
                   Clear
