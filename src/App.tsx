@@ -13,19 +13,7 @@ function App() {
   const [transcription, setTranscription] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [showCopiedFeedback, setShowCopiedFeedback] = useState(false);
-
-  const handleTranscriptionComplete = async (newTranscription: string) => {
-    setTranscription(newTranscription);
-    // Auto-copy to clipboard
-    try {
-      await navigator.clipboard.writeText(newTranscription);
-      // Show copied feedback
-      setShowCopiedFeedback(true);
-      setTimeout(() => setShowCopiedFeedback(false), 100); // Brief trigger
-    } catch (err) {
-      console.error("Failed to auto-copy to clipboard:", err);
-    }
-  };
+  const [isCopied, setIsCopied] = useState(false);
 
   const handleError = (errorMessage: string) => {
     setError(errorMessage);
@@ -43,8 +31,9 @@ function App() {
         <AppHeader />
 
         <RecordingControls
-          onTranscriptionComplete={handleTranscriptionComplete}
+          setTranscription={setTranscription}
           onError={handleError}
+          setIsCopied={setIsCopied}
         />
 
         <ErrorDisplay error={error} />
@@ -57,6 +46,8 @@ function App() {
                 transcription={transcription}
                 onClear={clearTranscription}
                 showCopiedFeedback={showCopiedFeedback}
+                isCopied={isCopied}
+                setIsCopied={setIsCopied}
               />
             </div>
             <TranscriptionEditor

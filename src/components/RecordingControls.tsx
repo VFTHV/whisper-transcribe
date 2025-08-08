@@ -2,17 +2,35 @@ import { useState, useRef, useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 type Props = {
-  onTranscriptionComplete: (transcription: string) => void;
+  setTranscription: React.Dispatch<React.SetStateAction<string>>;
   onError: (error: string) => void;
+  setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function RecordingControls({ onTranscriptionComplete, onError }: Props) {
+export function RecordingControls({
+  setTranscription,
+  onError,
+  setIsCopied,
+}: Props) {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const shouldProcessRef = useRef<boolean>(false);
+
+  const onTranscriptionComplete = async (newTranscription: string) => {
+    setTranscription(newTranscription);
+    // Auto-copy to clipboard
+    try {
+      await navigator.clipboard.writeText(newTranscription);
+      // Show copied feedback
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 100); // Brief trigger
+    } catch (err) {
+      console.error("Failed to auto-copy to clipboard:", err);
+    }
+  };
 
   // Global hotkey for recording
   useHotkeys(
