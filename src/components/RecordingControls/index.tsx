@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { FaPlay, FaPause, FaStop, FaCircle } from "react-icons/fa";
 
@@ -57,7 +57,7 @@ export function RecordingControls({
         cancelRecording();
       }
     },
-    { enableOnFormTags: true, scopes: ["global"] }
+    { enableOnFormTags: true }
   );
 
   // Spacebar to pause/resume recording
@@ -73,23 +73,23 @@ export function RecordingControls({
         }
       }
     },
-    { enableOnFormTags: true, scopes: ["global"] }
+    { enableOnFormTags: true }
   );
 
   // Listen for visibility changes to handle background recording
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden && isRecording) {
-        // Tab is now hidden, but recording continues
-        console.log("Tab hidden, recording continues in background");
-      }
-    };
+  // useEffect(() => {
+  //   const handleVisibilityChange = () => {
+  //     if (document.hidden && isRecording) {
+  //       // Tab is now hidden, but recording continues
+  //       console.log("Tab hidden, recording continues in background");
+  //     }
+  //   };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [isRecording]);
+  //   document.addEventListener("visibilitychange", handleVisibilityChange);
+  //   return () => {
+  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
+  //   };
+  // }, [isRecording]);
 
   const stopStream = () => {
     if (streamRef.current) {
