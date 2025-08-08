@@ -4,6 +4,7 @@ import {
   Instructions,
   RecordingControls,
   TranscriptionActions,
+  ErrorDisplay,
 } from "./components";
 import "./App.css";
 
@@ -47,11 +48,7 @@ function App() {
           onError={handleError}
         />
 
-        {error && (
-          <div className="error">
-            <p>❌ {error}</p>
-          </div>
-        )}
+        <ErrorDisplay error={error} />
 
         {transcription && (
           <div className="transcription-section">
