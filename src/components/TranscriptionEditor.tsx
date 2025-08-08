@@ -15,7 +15,6 @@ const TranscriptionEditor = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      rows={4}
     />
   );
 };
