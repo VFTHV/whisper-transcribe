@@ -7,10 +7,10 @@ type Props = {
   onDeleteTranscription: (id: string) => void;
 };
 
-export function TranscriptionHistory({
+const TranscriptionHistory = ({
   transcriptions,
   onDeleteTranscription,
-}: Props) {
+}: Props) => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const copyToClipboard = async (text: string, id: string) => {
@@ -75,4 +75,6 @@ export function TranscriptionHistory({
       </div>
     </div>
   );
-}
+};
+
+export default TranscriptionHistory;

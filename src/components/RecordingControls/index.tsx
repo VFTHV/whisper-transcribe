@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { FaPlay, FaPause, FaStop, FaCircle } from "react-icons/fa";
-import { HookWrapper } from "./HookWrapper";
+import HookWrapper from "./HookWrapper";
+import "./RecordingControls.css";
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
@@ -8,11 +9,11 @@ type Props = {
   setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function RecordingControls({
+const RecordingControls = ({
   setTranscription,
   onError,
   setIsCopied,
-}: Props) {
+}: Props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -227,4 +228,6 @@ export function RecordingControls({
       )}
     </div>
   );
-}
+};
+
+export default RecordingControls;

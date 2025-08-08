@@ -1,6 +1,6 @@
 export { default as TranscriptionEditor } from "./TranscriptionEditor";
-export { RecordingControls } from "./RecordingControls";
-export { TranscriptionActions } from "./TranscriptionActions";
-export { ErrorDisplay } from "./ErrorDisplay";
-export { TranscriptionHistory } from "./TranscriptionHistory";
-export { HeaderAccordion } from "./HeaderAccordion";
+export { default as RecordingControls } from "./RecordingControls";
+export { default as TranscriptionActions } from "./TranscriptionActions";
+export { default as ErrorDisplay } from "./ErrorDisplay";
+export { default as TranscriptionHistory } from "./TranscriptionHistory";
+export { default as HeaderAccordion } from "./HeaderAccordion";

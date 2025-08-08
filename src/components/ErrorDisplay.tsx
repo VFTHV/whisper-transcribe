@@ -2,7 +2,7 @@ type Props = {
   error: string;
 };
 
-export function ErrorDisplay({ error }: Props) {
+const ErrorDisplay = ({ error }: Props) => {
   if (!error) return null;
 
   return (
@@ -10,4 +10,6 @@ export function ErrorDisplay({ error }: Props) {
       <p>❌ {error}</p>
     </div>
   );
-}
+};
+
+export default ErrorDisplay;

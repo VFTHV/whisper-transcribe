@@ -1,16 +1,14 @@
-import React from "react";
-
 type Props = {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
 };
 
-const TranscriptionEditor: React.FC<Props> = ({
+const TranscriptionEditor = ({
   value,
   onChange,
   placeholder = "Transcription will appear here...",
-}) => {
+}: Props) => {
   return (
     <textarea
       className="transcription-text"

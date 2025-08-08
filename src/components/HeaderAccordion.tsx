@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
-export function HeaderAccordion() {
+const HeaderAccordion = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleAccordion = () => {
@@ -58,4 +58,6 @@ export function HeaderAccordion() {
       </div>
     </div>
   );
-}
+};
+
+export default HeaderAccordion;

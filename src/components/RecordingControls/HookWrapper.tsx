@@ -10,7 +10,7 @@ type Props = {
   cancelRecording: () => void;
 };
 
-export function HookWrapper({
+const HookWrapper = ({
   isRecording,
   isPaused,
   startRecording,
@@ -18,7 +18,7 @@ export function HookWrapper({
   pauseRecording,
   resumeRecording,
   cancelRecording,
-}: Props) {
+}: Props) => {
   // Global hotkey for recording
   useHotkeys(
     "ctrl+k",
@@ -62,4 +62,6 @@ export function HookWrapper({
   );
 
   return null;
-}
+};
+
+export default HookWrapper;

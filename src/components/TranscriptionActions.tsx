@@ -8,12 +8,12 @@ type Props = {
   setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export function TranscriptionActions({
+const TranscriptionActions = ({
   transcription,
   onClear,
   isCopied,
   setIsCopied,
-}: Props) {
+}: Props) => {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(transcription);
@@ -38,4 +38,6 @@ export function TranscriptionActions({
       </button>
     </div>
   );
-}
+};
+
+export default TranscriptionActions;
