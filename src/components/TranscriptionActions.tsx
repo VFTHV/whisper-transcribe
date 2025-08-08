@@ -1,14 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiCheck } from "react-icons/fi";
 import { MdContentCopy } from "react-icons/md";
 
 type Props = {
   transcription: string;
   onClear: () => void;
+  showCopiedFeedback?: boolean;
 };
 
-export function TranscriptionActions({ transcription, onClear }: Props) {
+export function TranscriptionActions({
+  transcription,
+  onClear,
+  showCopiedFeedback,
+}: Props) {
   const [isCopied, setIsCopied] = useState(false);
+
+  // Show copied feedback when prop changes
+  useEffect(() => {
+    if (showCopiedFeedback) {
+      setIsCopied(true);
+      const timer = setTimeout(() => setIsCopied(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showCopiedFeedback]);
 
   const copyToClipboard = async () => {
     try {

@@ -5,18 +5,23 @@ import {
   RecordingControls,
   TranscriptionActions,
   ErrorDisplay,
+  AppHeader,
 } from "./components";
 import "./App.css";
 
 function App() {
   const [transcription, setTranscription] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [showCopiedFeedback, setShowCopiedFeedback] = useState(false);
 
   const handleTranscriptionComplete = async (newTranscription: string) => {
     setTranscription(newTranscription);
     // Auto-copy to clipboard
     try {
       await navigator.clipboard.writeText(newTranscription);
+      // Show copied feedback
+      setShowCopiedFeedback(true);
+      setTimeout(() => setShowCopiedFeedback(false), 100); // Brief trigger
     } catch (err) {
       console.error("Failed to auto-copy to clipboard:", err);
     }
@@ -29,19 +34,13 @@ function App() {
   const clearTranscription = () => {
     setTranscription("");
     setError("");
+    setShowCopiedFeedback(false);
   };
 
   return (
     <div className="app">
       <div className="container">
-        <h1>🎤 Whisper Transcribe</h1>
-        <p className="subtitle">
-          Record your voice and get instant transcription
-        </p>
-        <p className="hotkey-info">
-          💡 Press <kbd>Ctrl+K</kbd> to start/stop recording (works even when
-          tab is not active). Press <kbd>Escape</kbd> to cancel recording.
-        </p>
+        <AppHeader />
 
         <RecordingControls
           onTranscriptionComplete={handleTranscriptionComplete}
@@ -57,6 +56,7 @@ function App() {
               <TranscriptionActions
                 transcription={transcription}
                 onClear={clearTranscription}
+                showCopiedFeedback={showCopiedFeedback}
               />
             </div>
             <TranscriptionEditor
