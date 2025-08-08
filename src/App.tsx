@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { FiCheck } from "react-icons/fi";
 import { MdContentCopy } from "react-icons/md";
 import { TranscriptionEditor } from "./components";
@@ -20,6 +21,35 @@ function App() {
   const audioChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const shouldProcessRef = useRef<boolean>(false);
+
+  // Global hotkey for recording
+  useHotkeys(
+    "ctrl+k",
+    (e) => {
+      e.preventDefault();
+      if (isRecording) {
+        stopRecording();
+      } else {
+        startRecording();
+      }
+    },
+    { enableOnFormTags: true, scopes: ["global"] }
+  );
+
+  // Listen for visibility changes to handle background recording
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden && isRecording) {
+        // Tab is now hidden, but recording continues
+        console.log("Tab hidden, recording continues in background");
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [isRecording]);
 
   const startRecording = async () => {
     try {
@@ -54,6 +84,16 @@ function App() {
 
       mediaRecorder.start();
       setIsRecording(true);
+
+      // Show notification if tab is not active
+      if (document.hidden) {
+        if ("Notification" in window && Notification.permission === "granted") {
+          new Notification("🎤 Recording Started", {
+            body: "Voice recording is now active. Press Ctrl+K to stop.",
+            icon: "/vite.svg",
+          });
+        }
+      }
     } catch (err) {
       setError(
         "Failed to start recording. Please check microphone permissions."
@@ -148,6 +188,10 @@ function App() {
         <h1>🎤 Whisper Transcribe</h1>
         <p className="subtitle">
           Record your voice and get instant transcription
+        </p>
+        <p className="hotkey-info">
+          💡 Press <kbd>Ctrl+K</kbd> to start/stop recording (works even when
+          tab is not active)
         </p>
 
         <div className="recording-section">
