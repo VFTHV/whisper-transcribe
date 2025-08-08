@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import {
   TranscriptionEditor,
-  Instructions,
   RecordingControls,
   TranscriptionActions,
   ErrorDisplay,
-  AppHeader,
   TranscriptionHistory,
+  HeaderAccordion,
 } from "./components";
 import {
   saveTranscription,
@@ -55,7 +54,7 @@ function App() {
   return (
     <div className="app">
       <div className="container">
-        <AppHeader />
+        <HeaderAccordion />
 
         <RecordingControls
           setTranscription={handleNewTranscription}
@@ -82,8 +81,6 @@ function App() {
             />
           </div>
         )}
-
-        <Instructions />
 
         <TranscriptionHistory
           transcriptions={transcriptionHistory}
