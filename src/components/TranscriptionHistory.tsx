@@ -38,38 +38,39 @@ const TranscriptionHistory = ({
       <div className="transcription-list">
         {transcriptions.map((transcription) => (
           <div key={transcription.id} className="transcription-item">
-            <div className="transcription-content">
+            <div className="transcription-item-header">
               <div className="transcription-date">{transcription.date}</div>
-              <div className="transcription-text">{transcription.text}</div>
+              <div className="transcription-actions">
+                <button
+                  className={`copy-button ${
+                    copiedId === transcription.id ? "copied" : ""
+                  }`}
+                  onClick={() =>
+                    copyToClipboard(transcription.text, transcription.id)
+                  }
+                  title={
+                    copiedId === transcription.id
+                      ? "Copied!"
+                      : "Copy to clipboard"
+                  }
+                >
+                  {copiedId === transcription.id ? (
+                    <FiCheck size={14} />
+                  ) : (
+                    <FiCopy size={14} />
+                  )}
+                </button>
+                <button
+                  className="delete-button"
+                  onClick={() => onDeleteTranscription(transcription.id)}
+                  title="Delete transcription"
+                >
+                  <FiTrash2 size={14} />
+                </button>
+              </div>
             </div>
-            <div className="transcription-actions">
-              <button
-                className={`copy-button ${
-                  copiedId === transcription.id ? "copied" : ""
-                }`}
-                onClick={() =>
-                  copyToClipboard(transcription.text, transcription.id)
-                }
-                title={
-                  copiedId === transcription.id
-                    ? "Copied!"
-                    : "Copy to clipboard"
-                }
-              >
-                {copiedId === transcription.id ? (
-                  <FiCheck size={14} />
-                ) : (
-                  <FiCopy size={14} />
-                )}
-              </button>
-              <button
-                className="delete-button"
-                onClick={() => onDeleteTranscription(transcription.id)}
-                title="Delete transcription"
-              >
-                <FiTrash2 size={14} />
-              </button>
-            </div>
+
+            <div className="transcription-text">{transcription.text}</div>
           </div>
         ))}
       </div>
