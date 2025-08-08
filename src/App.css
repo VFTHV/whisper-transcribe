@@ -74,105 +74,121 @@ kbd {
   margin-bottom: 30px;
 }
 
-.recording-buttons {
+.tape-recorder-controls {
   display: flex;
-  gap: 15px;
+  gap: 20px;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
+  background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+  padding: 25px 35px;
+  border-radius: 15px;
+  box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.8),
+    inset 5px 5px 10px rgba(255, 255, 255, 0.1), 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 2px solid #333;
 }
 
-.record-button {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  border: none;
-  padding: 16px 32px;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 600;
+.tape-icon {
+  font-size: 32px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 auto;
+  transition: all 0.2s ease;
+  color: #666;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8));
 }
 
-.record-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(102, 126, 234, 0.4);
+.tape-icon:hover:not(.disabled) {
+  transform: translateY(-2px) scale(1.1);
+  filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.9));
 }
 
-.record-button:disabled {
-  opacity: 0.6;
+.tape-icon:active:not(.disabled) {
+  transform: translateY(0) scale(1.05);
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.8));
+}
+
+.tape-icon.disabled {
+  opacity: 0.3;
   cursor: not-allowed;
+  color: #444;
 }
 
-.record-button.recording {
-  background: linear-gradient(135deg, #e53e3e, #c53030);
-  box-shadow: 0 8px 20px rgba(229, 62, 62, 0.3);
-  animation: pulse 2s infinite;
+/* Record Icon */
+.record-icon {
+  color: #888;
 }
 
-.cancel-button {
-  background: linear-gradient(135deg, #718096, #4a5568);
-  color: white;
-  border: none;
-  padding: 16px 32px;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(113, 128, 150, 0.3);
+.record-icon.recording {
+  color: #ff4444;
+  animation: recordPulse 1.5s infinite;
 }
 
-.cancel-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #4a5568, #2d3748);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(113, 128, 150, 0.4);
+.record-icon:hover:not(.disabled):not(.recording) {
+  color: #ff6666;
 }
 
-.cancel-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* Play Icon */
+.play-icon {
+  color: #888;
 }
 
-.pause-button {
-  background: linear-gradient(135deg, #ff9800, #f57c00);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
-  margin: 0 10px;
+.play-icon.active {
+  color: #44ff44;
 }
 
-.pause-button:hover {
-  background: linear-gradient(135deg, #f57c00, #e65100);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+.play-icon:hover:not(.disabled) {
+  color: #66ff66;
 }
 
-.pause-button.paused {
-  background: linear-gradient(135deg, #4caf50, #388e3c);
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+/* Pause Icon */
+.pause-icon {
+  color: #888;
 }
 
-.pause-button.paused:hover {
-  background: linear-gradient(135deg, #388e3c, #2e7d32);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+.pause-icon.active {
+  color: #ffaa44;
 }
 
-.pause-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.pause-icon:hover:not(.disabled) {
+  color: #ffcc66;
+}
+
+/* Stop Icon */
+.stop-icon {
+  color: #888;
+}
+
+.stop-icon.active {
+  color: #cccccc;
+}
+
+.stop-icon:hover:not(.disabled) {
+  color: #ffffff;
+}
+
+/* Cancel Icon */
+.cancel-icon {
+  color: #888;
+}
+
+.cancel-icon.active {
+  color: #ff6666;
+}
+
+.cancel-icon:hover:not(.disabled) {
+  color: #ff8888;
+}
+
+@keyframes recordPulse {
+  0%,
+  100% {
+    color: #ff4444;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))
+      drop-shadow(0 0 0 rgba(255, 68, 68, 0.8));
+  }
+  50% {
+    color: #ff6666;
+    filter: drop-shadow(3px 3px 6px rgba(0, 0, 0, 0.9))
+      drop-shadow(0 0 8px rgba(255, 68, 68, 0.6));
+  }
 }
 
 .recording-indicator {
@@ -414,8 +430,13 @@ kbd {
     font-size: 1rem;
   }
 
-  .recording-buttons {
-    gap: 10px;
+  .tape-recorder-controls {
+    gap: 15px;
+    padding: 20px 25px;
+  }
+
+  .tape-icon {
+    font-size: 28px;
   }
 
   .transcription-text {

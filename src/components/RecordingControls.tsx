@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { FaPlay, FaPause, FaStop, FaCircle } from "react-icons/fa";
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
@@ -215,43 +216,55 @@ export function RecordingControls({
 
   return (
     <div className="recording-section">
-      <div className="recording-buttons">
-        <button
-          className={`record-button ${isRecording ? "recording" : ""}`}
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={isProcessing}
-        >
-          {isRecording ? (
-            <>
-              <span
-                className={`recording-indicator ${isPaused ? "paused" : ""}`}
-              ></span>
-              Stop Recording
-            </>
-          ) : (
-            <>🎤 Start Recording</>
-          )}
-        </button>
+      <div className="tape-recorder-controls">
+        {/* Record Button */}
+        <FaCircle
+          className={`tape-icon record-icon ${isRecording ? "recording" : ""} ${
+            isProcessing || isRecording ? "disabled" : ""
+          }`}
+          onClick={isRecording || isProcessing ? undefined : startRecording}
+          title={isRecording ? "Recording..." : "Start Recording"}
+        />
 
-        {isRecording && (
-          <>
-            <button
-              className={`pause-button ${isPaused ? "paused" : ""}`}
-              onClick={isPaused ? resumeRecording : pauseRecording}
-              disabled={isProcessing}
-            >
-              {isPaused ? "▶️ Resume" : "⏸️ Pause"}
-            </button>
+        {/* Play/Resume Button */}
+        <FaPlay
+          className={`tape-icon play-icon ${isPaused ? "active" : ""} ${
+            isProcessing || !isRecording || !isPaused ? "disabled" : ""
+          }`}
+          onClick={isPaused && !isProcessing ? resumeRecording : undefined}
+          title="Resume Recording"
+        />
 
-            <button
-              className="cancel-button"
-              onClick={cancelRecording}
-              disabled={isProcessing}
-            >
-              ❌ Cancel
-            </button>
-          </>
-        )}
+        {/* Pause Button */}
+        <FaPause
+          className={`tape-icon pause-icon ${
+            isRecording && !isPaused ? "active" : ""
+          } ${isProcessing || !isRecording || isPaused ? "disabled" : ""}`}
+          onClick={
+            isRecording && !isPaused && !isProcessing
+              ? pauseRecording
+              : undefined
+          }
+          title="Pause Recording"
+        />
+
+        {/* Stop Button */}
+        <FaStop
+          className={`tape-icon stop-icon ${isRecording ? "active" : ""} ${
+            isProcessing || !isRecording ? "disabled" : ""
+          }`}
+          onClick={isRecording && !isProcessing ? stopRecording : undefined}
+          title="Stop Recording"
+        />
+
+        {/* Cancel Button */}
+        <FaStop
+          className={`tape-icon cancel-icon ${isRecording ? "active" : ""} ${
+            isProcessing || !isRecording ? "disabled" : ""
+          }`}
+          onClick={isRecording && !isProcessing ? cancelRecording : undefined}
+          title="Cancel Recording"
+        />
       </div>
 
       {isProcessing && (
