@@ -1,27 +1,23 @@
 import React from "react";
 
-interface TranscriptionEditorProps {
+type Props = {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  rows?: number;
-  className?: string;
-}
+};
 
-const TranscriptionEditor: React.FC<TranscriptionEditorProps> = ({
+const TranscriptionEditor: React.FC<Props> = ({
   value,
   onChange,
   placeholder = "Transcription will appear here...",
-  rows = 4,
-  className = "",
 }) => {
   return (
     <textarea
-      className={`transcription-text ${className}`}
+      className="transcription-text"
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      rows={rows}
+      rows={4}
     />
   );
 };
