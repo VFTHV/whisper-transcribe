@@ -13,6 +13,7 @@ export function RecordingControls({
   setIsCopied,
 }: Props) {
   const [isRecording, setIsRecording] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -53,6 +54,22 @@ export function RecordingControls({
       if (isRecording) {
         e.preventDefault();
         cancelRecording();
+      }
+    },
+    { enableOnFormTags: true, scopes: ["global"] }
+  );
+
+  // Spacebar to pause/resume recording
+  useHotkeys(
+    "space",
+    (e) => {
+      if (isRecording) {
+        e.preventDefault();
+        if (isPaused) {
+          resumeRecording();
+        } else {
+          pauseRecording();
+        }
       }
     },
     { enableOnFormTags: true, scopes: ["global"] }
@@ -163,11 +180,26 @@ export function RecordingControls({
     }
   };
 
+  const pauseRecording = () => {
+    if (mediaRecorderRef.current && isRecording && !isPaused) {
+      mediaRecorderRef.current.pause();
+      setIsPaused(true);
+    }
+  };
+
+  const resumeRecording = () => {
+    if (mediaRecorderRef.current && isRecording && isPaused) {
+      mediaRecorderRef.current.resume();
+      setIsPaused(false);
+    }
+  };
+
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
       shouldProcessRef.current = true; // Set flag to process audio
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      setIsPaused(false); // Reset pause state
     }
   };
 
@@ -176,6 +208,7 @@ export function RecordingControls({
       shouldProcessRef.current = false; // Set flag to NOT process audio
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      setIsPaused(false); // Reset pause state
       audioChunksRef.current = []; // Clear the audio chunks
     }
   };
@@ -190,7 +223,9 @@ export function RecordingControls({
         >
           {isRecording ? (
             <>
-              <span className="recording-indicator"></span>
+              <span
+                className={`recording-indicator ${isPaused ? "paused" : ""}`}
+              ></span>
               Stop Recording
             </>
           ) : (
@@ -199,13 +234,23 @@ export function RecordingControls({
         </button>
 
         {isRecording && (
-          <button
-            className="cancel-button"
-            onClick={cancelRecording}
-            disabled={isProcessing}
-          >
-            ❌ Cancel
-          </button>
+          <>
+            <button
+              className={`pause-button ${isPaused ? "paused" : ""}`}
+              onClick={isPaused ? resumeRecording : pauseRecording}
+              disabled={isProcessing}
+            >
+              {isPaused ? "▶️ Resume" : "⏸️ Pause"}
+            </button>
+
+            <button
+              className="cancel-button"
+              onClick={cancelRecording}
+              disabled={isProcessing}
+            >
+              ❌ Cancel
+            </button>
+          </>
         )}
       </div>
 

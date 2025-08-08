@@ -140,12 +140,52 @@ kbd {
   cursor: not-allowed;
 }
 
+.pause-button {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+  margin: 0 10px;
+}
+
+.pause-button:hover {
+  background: linear-gradient(135deg, #f57c00, #e65100);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+}
+
+.pause-button.paused {
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.pause-button.paused:hover {
+  background: linear-gradient(135deg, #388e3c, #2e7d32);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.pause-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .recording-indicator {
   width: 12px;
   height: 12px;
   background: white;
   border-radius: 50%;
   animation: blink 1s infinite;
+}
+
+.recording-indicator.paused {
+  background: #ff9800;
+  animation: pausedPulse 1.5s infinite;
 }
 
 @keyframes pulse {
@@ -168,6 +208,16 @@ kbd {
   51%,
   100% {
     opacity: 0.3;
+  }
+}
+
+@keyframes pausedPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
 

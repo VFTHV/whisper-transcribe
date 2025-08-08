@@ -39,8 +39,8 @@ export function HeaderAccordion() {
           <div className="hotkey-section">
             <p className="hotkey-info">
               💡 Press <kbd>Ctrl+K</kbd> to start/stop recording (works even
-              when tab is not active). Press <kbd>Escape</kbd> to cancel
-              recording.
+              when tab is not active). Press <kbd>Space</kbd> to pause/resume
+              recording. Press <kbd>Escape</kbd> to cancel recording.
             </p>
           </div>
 
