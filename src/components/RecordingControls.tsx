@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 type Props = {
-  setTranscription: React.Dispatch<React.SetStateAction<string>>;
+  setTranscription: (newTranscription: string) => void;
   onError: (error: string) => void;
   setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
 };

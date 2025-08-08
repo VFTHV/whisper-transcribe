@@ -4,3 +4,4 @@ export { RecordingControls } from "./RecordingControls";
 export { TranscriptionActions } from "./TranscriptionActions";
 export { ErrorDisplay } from "./ErrorDisplay";
 export { AppHeader } from "./AppHeader";
+export { TranscriptionHistory } from "./TranscriptionHistory";

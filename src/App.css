@@ -373,3 +373,118 @@ kbd {
     padding: 15px;
   }
 }
+
+/* Transcription History Styles */
+.transcription-history {
+  margin-top: 30px;
+  text-align: left;
+}
+
+.transcription-history h3 {
+  color: #2d3748;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.no-transcriptions {
+  color: #718096;
+  text-align: center;
+  font-style: italic;
+  padding: 20px;
+}
+
+.transcription-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.transcription-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.2s;
+}
+
+.transcription-item:last-child {
+  border-bottom: none;
+}
+
+.transcription-item:hover {
+  background-color: rgba(102, 126, 234, 0.05);
+}
+
+.transcription-content {
+  flex: 1;
+  margin-right: 12px;
+}
+
+.transcription-date {
+  font-size: 0.75rem;
+  color: #718096;
+  margin-bottom: 4px;
+}
+
+.transcription-text {
+  color: #2d3748;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.transcription-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.transcription-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  color: #718096;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.transcription-actions button:hover {
+  background-color: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.transcription-actions .copy-button.copied {
+  color: #38a169;
+}
+
+.transcription-actions .delete-button:hover {
+  color: #e53e3e;
+  background-color: rgba(229, 62, 62, 0.1);
+}
+
+/* Scrollbar Styling */
+.transcription-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.transcription-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.transcription-list::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 3px;
+}
+
+.transcription-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
+}

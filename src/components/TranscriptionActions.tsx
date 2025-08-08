@@ -4,7 +4,6 @@ import { MdContentCopy } from "react-icons/md";
 type Props = {
   transcription: string;
   onClear: () => void;
-  showCopiedFeedback?: boolean;
   isCopied: boolean;
   setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
 };

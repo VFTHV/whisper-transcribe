@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   TranscriptionEditor,
   Instructions,
@@ -6,23 +6,50 @@ import {
   TranscriptionActions,
   ErrorDisplay,
   AppHeader,
+  TranscriptionHistory,
 } from "./components";
+import {
+  saveTranscription,
+  getTranscriptions,
+  deleteTranscription,
+  TranscriptionRecord,
+} from "./utils/transcriptionStorage";
 import "./App.css";
 
 function App() {
   const [transcription, setTranscription] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [showCopiedFeedback, setShowCopiedFeedback] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [transcriptionHistory, setTranscriptionHistory] = useState<
+    TranscriptionRecord[]
+  >([]);
+
+  // Load transcription history on component mount
+  useEffect(() => {
+    const history = getTranscriptions();
+    setTranscriptionHistory(history);
+  }, []);
+
+  const handleNewTranscription = (newTranscription: string) => {
+    setTranscription(newTranscription);
+
+    // Save to history
+    const savedRecord = saveTranscription(newTranscription);
+    setTranscriptionHistory((prev) => [savedRecord, ...prev]);
+  };
 
   const handleError = (errorMessage: string) => {
     setError(errorMessage);
   };
 
+  const handleDeleteTranscription = (id: string) => {
+    deleteTranscription(id);
+    setTranscriptionHistory((prev) => prev.filter((t) => t.id !== id));
+  };
+
   const clearTranscription = () => {
     setTranscription("");
     setError("");
-    setShowCopiedFeedback(false);
   };
 
   return (
@@ -31,7 +58,7 @@ function App() {
         <AppHeader />
 
         <RecordingControls
-          setTranscription={setTranscription}
+          setTranscription={handleNewTranscription}
           onError={handleError}
           setIsCopied={setIsCopied}
         />
@@ -45,7 +72,6 @@ function App() {
               <TranscriptionActions
                 transcription={transcription}
                 onClear={clearTranscription}
-                showCopiedFeedback={showCopiedFeedback}
                 isCopied={isCopied}
                 setIsCopied={setIsCopied}
               />
@@ -58,6 +84,11 @@ function App() {
         )}
 
         <Instructions />
+
+        <TranscriptionHistory
+          transcriptions={transcriptionHistory}
+          onDeleteTranscription={handleDeleteTranscription}
+        />
       </div>
     </div>
   );
