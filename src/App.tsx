@@ -36,6 +36,18 @@ function App() {
     { enableOnFormTags: true, scopes: ["global"] }
   );
 
+  // Escape key to cancel recording
+  useHotkeys(
+    "escape",
+    (e) => {
+      if (isRecording) {
+        e.preventDefault();
+        cancelRecording();
+      }
+    },
+    { enableOnFormTags: true, scopes: ["global"] }
+  );
+
   // Listen for visibility changes to handle background recording
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -191,7 +203,7 @@ function App() {
         </p>
         <p className="hotkey-info">
           💡 Press <kbd>Ctrl+K</kbd> to start/stop recording (works even when
-          tab is not active)
+          tab is not active). Press <kbd>Escape</kbd> to cancel recording.
         </p>
 
         <div className="recording-section">
