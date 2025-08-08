@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
 import { FaPlay, FaPause, FaStop, FaCircle } from "react-icons/fa";
+import { HookWrapper } from "./HookWrapper";
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
@@ -33,63 +33,6 @@ export function RecordingControls({
       console.error("Failed to auto-copy to clipboard:", err);
     }
   };
-
-  // Global hotkey for recording
-  useHotkeys(
-    "ctrl+k",
-    (e) => {
-      e.preventDefault();
-      if (isRecording) {
-        stopRecording();
-      } else {
-        startRecording();
-      }
-    },
-    { enableOnFormTags: true, scopes: ["global"] }
-  );
-
-  // Escape key to cancel recording
-  useHotkeys(
-    "escape",
-    (e) => {
-      if (isRecording) {
-        e.preventDefault();
-        cancelRecording();
-      }
-    },
-    { enableOnFormTags: true }
-  );
-
-  // Spacebar to pause/resume recording
-  useHotkeys(
-    "space",
-    (e) => {
-      if (isRecording) {
-        e.preventDefault();
-        if (isPaused) {
-          resumeRecording();
-        } else {
-          pauseRecording();
-        }
-      }
-    },
-    { enableOnFormTags: true }
-  );
-
-  // Listen for visibility changes to handle background recording
-  // useEffect(() => {
-  //   const handleVisibilityChange = () => {
-  //     if (document.hidden && isRecording) {
-  //       // Tab is now hidden, but recording continues
-  //       console.log("Tab hidden, recording continues in background");
-  //     }
-  //   };
-
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-  //   return () => {
-  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
-  //   };
-  // }, [isRecording]);
 
   const stopStream = () => {
     if (streamRef.current) {
@@ -216,6 +159,15 @@ export function RecordingControls({
 
   return (
     <div className="recording-section">
+      <HookWrapper
+        isRecording={isRecording}
+        isPaused={isPaused}
+        startRecording={startRecording}
+        stopRecording={stopRecording}
+        pauseRecording={pauseRecording}
+        resumeRecording={resumeRecording}
+        cancelRecording={cancelRecording}
+      />
       <div className="tape-recorder-controls">
         {/* Record Button */}
         <FaCircle
