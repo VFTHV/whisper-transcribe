@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
-import { FaPlay, FaPause, FaStop, FaCircle } from "react-icons/fa";
+import { FaPlay, FaPause, FaCircle } from "react-icons/fa";
+import { RiSquareFill } from "react-icons/ri";
 import HookWrapper from "./HookWrapper";
 import "./RecordingControls.css";
 
@@ -183,13 +184,19 @@ const RecordingControls = ({
         cancelRecording={cancelRecording}
       />
       <div className="tape-recorder-controls">
-        {/* Record Button */}
+        {/* Record/Stop Button */}
         <FaCircle
           className={`tape-icon record-icon ${isRecording ? "recording" : ""} ${
-            isProcessing || isRecording ? "disabled" : ""
+            isProcessing ? "disabled" : ""
           }`}
-          onClick={isRecording || isProcessing ? undefined : startRecording}
-          title={isRecording ? "Recording..." : "Start Recording"}
+          onClick={
+            isProcessing
+              ? undefined
+              : isRecording
+              ? stopRecording
+              : startRecording
+          }
+          title={isRecording ? "Stop Recording" : "Start Recording"}
         />
 
         {/* Play/Resume Button */}
@@ -214,17 +221,8 @@ const RecordingControls = ({
           title="Pause Recording"
         />
 
-        {/* Stop Button */}
-        <FaStop
-          className={`tape-icon stop-icon ${isRecording ? "active" : ""} ${
-            isProcessing || !isRecording ? "disabled" : ""
-          }`}
-          onClick={isRecording && !isProcessing ? stopRecording : undefined}
-          title="Stop Recording"
-        />
-
         {/* Cancel Button */}
-        <FaStop
+        <RiSquareFill
           className={`tape-icon cancel-icon ${isRecording ? "active" : ""} ${
             isProcessing || !isRecording ? "disabled" : ""
           }`}
