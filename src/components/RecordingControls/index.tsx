@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { FaPlay, FaPause, FaCircle } from "react-icons/fa";
 import HookWrapper from "./HookWrapper";
+import RecordingTimer from "./RecordingTimer";
 import "./RecordingControls.css";
 import { BsXSquareFill } from "react-icons/bs";
 
@@ -183,6 +184,7 @@ const RecordingControls = ({
         resumeRecording={resumeRecording}
         cancelRecording={cancelRecording}
       />
+
       <div className="tape-recorder-controls">
         {/* Record/Stop Button */}
         <FaCircle
@@ -230,6 +232,8 @@ const RecordingControls = ({
           title="Cancel Recording"
         />
       </div>
+
+      <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
 
       {isProcessing && (
         <div className="processing">
