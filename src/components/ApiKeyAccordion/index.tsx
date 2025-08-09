@@ -33,7 +33,7 @@ const ApiKeyAccordion = ({ setApiKey }: Props) => {
         id="api-key-accordion-content"
         className={`accordion-content ${isExpanded ? "expanded" : "collapsed"}`}
       >
-        <ApiKeyInput setApiKey={setApiKey} />
+        <ApiKeyInput setApiKey={setApiKey} setIsExpanded={setIsExpanded} />
       </div>
     </div>
   );

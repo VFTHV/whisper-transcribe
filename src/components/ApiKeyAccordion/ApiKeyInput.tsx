@@ -3,9 +3,10 @@ import "./ApiKeyInput.css";
 
 type Props = {
   setApiKey: (apiKey: string) => void;
+  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ApiKeyInput = ({ setApiKey }: Props) => {
+const ApiKeyInput = ({ setApiKey, setIsExpanded }: Props) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [tempApiKey, setTempApiKey] = useState("");
 
@@ -14,6 +15,7 @@ const ApiKeyInput = ({ setApiKey }: Props) => {
       setApiKey(tempApiKey);
       setIsSubmitted(true);
       setTempApiKey(""); // Clear temp input for security
+      setTimeout(() => setIsExpanded(false), 1000);
     }
   };
 

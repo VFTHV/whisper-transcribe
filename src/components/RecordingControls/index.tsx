@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { FaPlay, FaPause, FaCircle } from "react-icons/fa";
-import { RiSquareFill } from "react-icons/ri";
 import HookWrapper from "./HookWrapper";
 import "./RecordingControls.css";
 import { BsXSquareFill } from "react-icons/bs";
