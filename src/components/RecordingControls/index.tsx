@@ -135,7 +135,7 @@ const RecordingControls = ({
       }
     } catch (err) {
       setError(
-        "Failed to start recording. Please check microphone permissions."
+        `Failed to start recording. Please check microphone permissions. ${err}`
       );
       console.error("Recording error:", err);
     }

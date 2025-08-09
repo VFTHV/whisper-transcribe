@@ -26,6 +26,8 @@ const RecordingTimer = ({ isRecording, isPaused }: Props) => {
   const updateRecordingTime = useCallback(() => {
     if (!isRecording || isPaused) return;
 
+    console.log("update recording time");
+
     const currentTime = Date.now();
     const elapsedTime =
       (currentTime -
