@@ -32,3 +32,6 @@ dist-ssr
 
 # Server uploads
 server/uploads/
+
+# Local Netlify folder
+.netlify
