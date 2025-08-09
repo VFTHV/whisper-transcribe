@@ -36,13 +36,12 @@ const HeaderAccordion = () => {
       >
         <div className="accordion-inner">
           {/* Hotkey Info */}
-          <div className="hotkey-section">
-            <p className="hotkey-info">
-              💡 Press <kbd>Ctrl+K</kbd> to start/stop recording (works even
-              when tab is not active). Press <kbd>Space</kbd> to pause/resume
-              recording. Press <kbd>Escape</kbd> to cancel recording.
-            </p>
-          </div>
+
+          <p className="hotkey-info">
+            💡 Press <kbd>Ctrl+K</kbd> to start/stop recording (works even when
+            tab is not active). Press <kbd>Space</kbd> to pause/resume
+            recording. Press <kbd>Escape</kbd> to cancel recording.
+          </p>
 
           {/* Instructions */}
           <div className="instructions-section">
