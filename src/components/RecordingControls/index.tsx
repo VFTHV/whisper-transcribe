@@ -231,9 +231,8 @@ const RecordingControls = ({
           onClick={isRecording && !isProcessing ? cancelRecording : undefined}
           title="Cancel Recording"
         />
+        <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
       </div>
-
-      <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
 
       {isProcessing && (
         <div className="processing">

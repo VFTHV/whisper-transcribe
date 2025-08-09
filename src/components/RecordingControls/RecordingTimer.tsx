@@ -102,11 +102,6 @@ const RecordingTimer = ({ isRecording, isPaused }: Props) => {
     };
   }, []);
 
-  // Don't render if not recording
-  if (!isRecording) {
-    return null;
-  }
-
   return (
     <div className="recording-timer">
       <div className="timer-display">
