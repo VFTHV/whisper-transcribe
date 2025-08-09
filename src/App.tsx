@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  ApiKeyInput,
   TranscriptionEditor,
   RecordingControls,
   TranscriptionActions,
@@ -53,21 +54,7 @@ function App() {
       <div className="container">
         <HeaderAccordion />
 
-        {/* API Key Input */}
-        <div className="api-key-section">
-          <h3>🔑 OpenAI API Key</h3>
-          <input
-            type="password"
-            placeholder="Enter your OpenAI API key (sk-...)"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            className="api-key-input"
-          />
-          <p className="api-key-help">
-            Your API key is only sent to the server for processing and never
-            stored.
-          </p>
-        </div>
+        <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} />
 
         <RecordingControls
           setTranscription={handleNewTranscription}

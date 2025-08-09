@@ -523,46 +523,6 @@ kbd {
   font-size: 0.95rem;
 }
 
-/* API Key Section */
-.api-key-section {
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 15px;
-  padding: 20px;
-  margin-bottom: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.api-key-section h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: #2d3748;
-  font-size: 1.2rem;
-}
-
-.api-key-input {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #e2e8f0;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #2d3748;
-  font-size: 1rem;
-  margin-bottom: 10px;
-  transition: border-color 0.3s ease;
-}
-
-.api-key-input:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
-}
-
-.api-key-help {
-  font-size: 0.9rem;
-  color: #718096;
-  margin: 0;
-}
-
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .header-main h1 {
