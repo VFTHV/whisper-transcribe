@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  ApiKeyInput,
+  ApiKeyAccordion,
   TranscriptionEditor,
   RecordingControls,
   TranscriptionActions,
@@ -54,7 +54,7 @@ function App() {
       <div className="container">
         <HeaderAccordion />
 
-        <ApiKeyInput setApiKey={setApiKey} />
+        <ApiKeyAccordion setApiKey={setApiKey} />
 
         <RecordingControls
           setTranscription={handleNewTranscription}
