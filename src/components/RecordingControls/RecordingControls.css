@@ -42,6 +42,9 @@
 
 .record-icon.recording {
   color: #ff4444;
+}
+
+.record-icon.recording.active {
   animation: recordBlink 1s infinite;
 }
 

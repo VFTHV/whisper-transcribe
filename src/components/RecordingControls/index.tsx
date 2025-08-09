@@ -3,6 +3,7 @@ import { FaPlay, FaPause, FaCircle } from "react-icons/fa";
 import { RiSquareFill } from "react-icons/ri";
 import HookWrapper from "./HookWrapper";
 import "./RecordingControls.css";
+import { BsXSquareFill } from "react-icons/bs";
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
@@ -187,8 +188,8 @@ const RecordingControls = ({
         {/* Record/Stop Button */}
         <FaCircle
           className={`tape-icon record-icon ${isRecording ? "recording" : ""} ${
-            isProcessing ? "disabled" : ""
-          }`}
+            isRecording && !isPaused ? "active" : ""
+          } ${isProcessing ? "disabled" : ""}`}
           onClick={
             isProcessing
               ? undefined
@@ -222,7 +223,7 @@ const RecordingControls = ({
         />
 
         {/* Cancel Button */}
-        <RiSquareFill
+        <BsXSquareFill
           className={`tape-icon cancel-icon ${isRecording ? "active" : ""} ${
             isProcessing || !isRecording ? "disabled" : ""
           }`}
