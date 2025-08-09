@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "netlify dev",
+    "dev:vite": "vite",
     "dev:server": "cd server && npm run dev",
-    "dev:all": "concurrently \"npm run dev:server\" \"npm run dev\"",
+    "dev:all": "concurrently \"npm run dev:server\" \"npm run dev:vite\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

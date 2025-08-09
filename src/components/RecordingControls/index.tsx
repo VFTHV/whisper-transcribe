@@ -5,6 +5,7 @@ import RecordingTimer from "./RecordingTimer";
 import "./RecordingControls.css";
 import { BsXSquareFill } from "react-icons/bs";
 import { ImSpinner } from "react-icons/im";
+import { getApiUrl, API_ENDPOINTS } from "../../utils/apiConfig";
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
@@ -61,7 +62,7 @@ const RecordingControls = ({
       formData.append("audio", audioBlob, "recording.webm");
       formData.append("apiKey", apiKey);
 
-      const response = await fetch("/api/transcribe", {
+      const response = await fetch(getApiUrl(API_ENDPOINTS.TRANSCRIBE), {
         method: "POST",
         body: formData,
       });
