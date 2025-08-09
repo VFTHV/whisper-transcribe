@@ -63,7 +63,7 @@ function App() {
           apiKey={apiKey}
         />
 
-        <ErrorDisplay error={error} />
+        <ErrorDisplay error={error} setError={setError} />
 
         {transcription && (
           <div className="transcription-section">
