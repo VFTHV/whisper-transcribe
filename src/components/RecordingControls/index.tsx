@@ -172,7 +172,7 @@ const RecordingControls = ({
   };
 
   return (
-    <div className="recording-section">
+    <>
       <HookWrapper
         isRecording={isRecording}
         isPaused={isPaused}
@@ -239,7 +239,7 @@ const RecordingControls = ({
           <p>Processing your audio...</p>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

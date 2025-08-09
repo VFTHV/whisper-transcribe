@@ -291,16 +291,9 @@ kbd {
   }
 }
 
-/* Transcription History Styles */
-.transcription-history {
-  margin-top: 30px;
-  text-align: left;
-}
-
 .transcription-history h3 {
   color: #2d3748;
   font-size: 1.2rem;
-  margin-bottom: 15px;
   text-align: center;
 }
 
@@ -404,11 +397,6 @@ kbd {
   background: rgba(102, 126, 234, 0.5);
 }
 
-/* Header Accordion Styles */
-.header-accordion {
-  margin-bottom: 30px;
-}
-
 .header-main {
   text-align: center;
 }
@@ -443,7 +431,6 @@ kbd {
   align-items: center;
   gap: 8px;
   transition: all 0.2s ease;
-  margin-bottom: 10px;
 }
 
 .accordion-toggle:hover {

@@ -9,7 +9,7 @@ const HeaderAccordion = () => {
   };
 
   return (
-    <div className="header-accordion">
+    <div>
       {/* Main Header - Always Visible */}
       <div className="header-main">
         <h1>🎤 Whisper Transcribe</h1>

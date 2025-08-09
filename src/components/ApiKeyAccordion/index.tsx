@@ -14,7 +14,7 @@ const ApiKeyAccordion = ({ setApiKey }: Props) => {
   };
 
   return (
-    <div className="header-accordion">
+    <div>
       {/* Accordion Toggle Button */}
       <div className="header-main">
         <button
