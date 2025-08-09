@@ -54,7 +54,7 @@ function App() {
       <div className="container">
         <HeaderAccordion />
 
-        <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} />
+        <ApiKeyInput setApiKey={setApiKey} />
 
         <RecordingControls
           setTranscription={handleNewTranscription}

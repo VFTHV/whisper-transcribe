@@ -14,15 +14,21 @@
   font-size: 1.2rem;
 }
 
+/* Input Container */
+.api-key-input-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
 .api-key-input {
-  width: 100%;
+  flex: 1;
   padding: 12px;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.9);
   color: #2d3748;
   font-size: 1rem;
-  margin-bottom: 10px;
   transition: border-color 0.3s ease;
 }
 
@@ -32,8 +38,79 @@
   box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
 }
 
+/* Submit Button */
+.api-key-submit-btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.api-key-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.api-key-submit-btn:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Submitted State */
+.api-key-submitted {
+  margin-bottom: 15px;
+}
+
+.api-key-status {
+  color: #38a169;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.api-key-reenter-btn {
+  padding: 8px 16px;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  background: transparent;
+  color: #667eea;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.api-key-reenter-btn:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Help Text */
 .api-key-help {
   font-size: 0.9rem;
   color: #718096;
   margin: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .api-key-input-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .api-key-submit-btn {
+    width: 100%;
+  }
 }
