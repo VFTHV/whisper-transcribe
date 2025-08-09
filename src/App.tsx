@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import {
-  ApiKeyAccordion,
-  TranscriptionEditor,
-  RecordingControls,
-  TranscriptionActions,
-  ErrorDisplay,
-  TranscriptionHistory,
-  HeaderAccordion,
-} from "./components";
+import ApiKeyAccordion from "./components/ApiKeyAccordion";
+import TranscriptionEditor from "./components/TranscriptionEditor";
+import RecordingControls from "./components/RecordingControls";
+import TranscriptionActions from "./components/TranscriptionActions";
+import ErrorDisplay from "./components/ErrorDisplay";
+import TranscriptionHistory from "./components/TranscriptionHistory";
+import HeaderAccordion from "./components/HeaderAccordion";
 import {
   saveTranscription,
   getTranscriptions,

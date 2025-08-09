@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import ApiKeyInput from "./index";
+import ApiKeyInput from "./ApiKeyInput";
 
 type Props = {
   setApiKey: (apiKey: string) => void;
