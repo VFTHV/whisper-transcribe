@@ -19,6 +19,7 @@ function App() {
   const [transcription, setTranscription] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isCopied, setIsCopied] = useState(false);
+  const [apiKey, setApiKey] = useState<string>("");
   const [transcriptionHistory, setTranscriptionHistory] = useState<
     TranscriptionRecord[]
   >([]);
@@ -52,10 +53,27 @@ function App() {
       <div className="container">
         <HeaderAccordion />
 
+        {/* API Key Input */}
+        <div className="api-key-section">
+          <h3>🔑 OpenAI API Key</h3>
+          <input
+            type="password"
+            placeholder="Enter your OpenAI API key (sk-...)"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            className="api-key-input"
+          />
+          <p className="api-key-help">
+            Your API key is only sent to the server for processing and never
+            stored.
+          </p>
+        </div>
+
         <RecordingControls
           setTranscription={handleNewTranscription}
           setError={setError}
           setIsCopied={setIsCopied}
+          apiKey={apiKey}
         />
 
         <ErrorDisplay error={error} />

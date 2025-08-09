@@ -46,10 +46,7 @@ const upload = multer({
   },
 });
 
-// Initialize OpenAI
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// OpenAI will be initialized per request with user's API key
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
@@ -63,9 +60,16 @@ app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
       return res.status(400).json({ error: "No audio file provided" });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({ error: "OpenAI API key not configured" });
+    // Get API key from request body
+    const { apiKey } = req.body;
+    if (!apiKey) {
+      return res.status(400).json({ error: "OpenAI API key is required" });
     }
+
+    // Initialize OpenAI with user's API key
+    const openai = new OpenAI({
+      apiKey: apiKey,
+    });
 
     console.log("Processing audio file:", req.file.filename);
 

@@ -7,12 +7,14 @@ type Props = {
   setTranscription: (newTranscription: string) => void;
   setError: (error: string) => void;
   setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
+  apiKey: string;
 };
 
 const RecordingControls = ({
   setTranscription,
   setError,
   setIsCopied,
+  apiKey,
 }: Props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -43,12 +45,18 @@ const RecordingControls = ({
   };
 
   const sendAudioToServer = async (audioBlob: Blob) => {
+    if (!apiKey.trim()) {
+      setError("Please enter your OpenAI API key before recording.");
+      return;
+    }
+
     setIsProcessing(true);
     setError("");
 
     try {
       const formData = new FormData();
       formData.append("audio", audioBlob, "recording.webm");
+      formData.append("apiKey", apiKey);
 
       const response = await fetch("http://localhost:3001/api/transcribe", {
         method: "POST",
@@ -64,7 +72,7 @@ const RecordingControls = ({
       if (result.success) {
         onTranscriptionComplete(result.transcription);
       } else {
-        setError("Transcription failed");
+        setError(result.error || "Transcription failed");
       }
     } catch (err) {
       setError("Failed to transcribe audio. Please try again.");
@@ -75,6 +83,11 @@ const RecordingControls = ({
   };
 
   const startRecording = async () => {
+    if (!apiKey.trim()) {
+      setError("Please enter your OpenAI API key before recording.");
+      return;
+    }
+
     try {
       setError("");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
