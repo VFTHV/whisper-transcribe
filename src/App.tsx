@@ -37,10 +37,6 @@ function App() {
     setTranscriptionHistory((prev) => [savedRecord, ...prev]);
   };
 
-  const handleError = (errorMessage: string) => {
-    setError(errorMessage);
-  };
-
   const handleDeleteTranscription = (id: string) => {
     deleteTranscription(id);
     setTranscriptionHistory((prev) => prev.filter((t) => t.id !== id));
@@ -58,7 +54,7 @@ function App() {
 
         <RecordingControls
           setTranscription={handleNewTranscription}
-          onError={handleError}
+          setError={setError}
           setIsCopied={setIsCopied}
         />
 

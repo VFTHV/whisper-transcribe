@@ -5,13 +5,13 @@ import "./RecordingControls.css";
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
-  onError: (error: string) => void;
+  setError: (error: string) => void;
   setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const RecordingControls = ({
   setTranscription,
-  onError,
+  setError,
   setIsCopied,
 }: Props) => {
   const [isRecording, setIsRecording] = useState(false);
@@ -44,7 +44,7 @@ const RecordingControls = ({
 
   const sendAudioToServer = async (audioBlob: Blob) => {
     setIsProcessing(true);
-    onError("");
+    setError("");
 
     try {
       const formData = new FormData();
@@ -64,10 +64,10 @@ const RecordingControls = ({
       if (result.success) {
         onTranscriptionComplete(result.transcription);
       } else {
-        onError("Transcription failed");
+        setError("Transcription failed");
       }
     } catch (err) {
-      onError("Failed to transcribe audio. Please try again.");
+      setError("Failed to transcribe audio. Please try again.");
       console.error("Transcription error:", err);
     } finally {
       setIsProcessing(false);
@@ -76,7 +76,7 @@ const RecordingControls = ({
 
   const startRecording = async () => {
     try {
-      onError("");
+      setError("");
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
@@ -118,7 +118,7 @@ const RecordingControls = ({
         }
       }
     } catch (err) {
-      onError(
+      setError(
         "Failed to start recording. Please check microphone permissions."
       );
       console.error("Recording error:", err);
