@@ -32,9 +32,11 @@ function App() {
   const handleNewTranscription = (newTranscription: string) => {
     setTranscription(newTranscription);
 
-    // Save to history
+    // Save to history (only if it meets the minimum word requirement)
     const savedRecord = saveTranscription(newTranscription);
-    setTranscriptionHistory((prev) => [savedRecord, ...prev]);
+    if (savedRecord) {
+      setTranscriptionHistory((prev) => [savedRecord, ...prev]);
+    }
   };
 
   const handleDeleteTranscription = (id: string) => {

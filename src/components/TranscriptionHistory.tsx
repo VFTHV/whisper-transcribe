@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { FiCheck, FiCopy, FiTrash2 } from "react-icons/fi";
-import { TranscriptionRecord } from "../utils/transcriptionStorage";
+import {
+  MIN_WORDS,
+  STORED_TRANSCRIPTIONS,
+  TranscriptionRecord,
+} from "../utils/transcriptionStorage";
 
 type Props = {
   transcriptions: TranscriptionRecord[];
@@ -26,7 +30,10 @@ const TranscriptionHistory = ({
   if (transcriptions.length === 0) {
     return (
       <div className="transcription-history">
-        <h3>📜 Previous Transcriptions</h3>
+        <h3>
+          📜 Previous {STORED_TRANSCRIPTIONS} Transcriptions (minimum{" "}
+          {MIN_WORDS} words)
+        </h3>
         <p className="no-transcriptions">No previous transcriptions yet.</p>
       </div>
     );
@@ -34,7 +41,10 @@ const TranscriptionHistory = ({
 
   return (
     <div className="transcription-history">
-      <h3>📜 Previous Transcriptions</h3>
+      <h3>
+        📜 Previous {STORED_TRANSCRIPTIONS} Transcriptions (minimum {MIN_WORDS}{" "}
+        words)
+      </h3>
       <div className="transcription-list">
         {transcriptions.map((transcription) => (
           <div key={transcription.id} className="transcription-item">
