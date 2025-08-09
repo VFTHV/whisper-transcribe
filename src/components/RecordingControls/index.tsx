@@ -4,6 +4,7 @@ import HookWrapper from "./HookWrapper";
 import RecordingTimer from "./RecordingTimer";
 import "./RecordingControls.css";
 import { BsXSquareFill } from "react-icons/bs";
+import { ImSpinner } from "react-icons/im";
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
@@ -187,19 +188,26 @@ const RecordingControls = ({
 
       <div className="tape-recorder-controls">
         {/* Record/Stop Button */}
-        <FaCircle
-          className={`tape-icon record-icon ${isRecording ? "recording" : ""} ${
-            isRecording && !isPaused ? "active" : ""
-          } ${isProcessing ? "disabled" : ""}`}
-          onClick={
-            isProcessing
-              ? undefined
-              : isRecording
-              ? stopRecording
-              : startRecording
-          }
-          title={isRecording ? "Stop Recording" : "Start Recording"}
-        />
+        {isProcessing ? (
+          <ImSpinner className="processing-spinner" />
+        ) : (
+          // </div>
+          <FaCircle
+            className={`tape-icon record-icon ${
+              isRecording ? "recording" : ""
+            } ${isRecording && !isPaused ? "active" : ""} ${
+              isProcessing ? "disabled" : ""
+            }`}
+            onClick={
+              isProcessing
+                ? undefined
+                : isRecording
+                ? stopRecording
+                : startRecording
+            }
+            title={isRecording ? "Stop Recording" : "Start Recording"}
+          />
+        )}
 
         {/* Play/Resume Button */}
         <FaPlay
@@ -233,13 +241,6 @@ const RecordingControls = ({
         />
         <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
       </div>
-
-      {isProcessing && (
-        <div className="processing">
-          <div className="spinner"></div>
-          <p>Processing your audio...</p>
-        </div>
-      )}
     </>
   );
 };
