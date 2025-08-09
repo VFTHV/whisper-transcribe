@@ -53,18 +53,29 @@ const ApiKeyInput = ({ setApiKey }: Props) => {
         </div>
       ) : (
         <div className="api-key-submitted">
-          <p className="api-key-status">
-            ✅ API key submitted and ready to use
-          </p>
           <button onClick={handleReenter} className="api-key-reenter-btn">
             Re-enter API Key
           </button>
+          <p className="api-key-status">
+            ✅ API key submitted and ready to use
+          </p>
         </div>
       )}
 
       <p className="api-key-help">
         Your API key is only sent to the server for processing and never stored.
       </p>
+
+      <div>
+        <a
+          href="https://platform.openai.com/usage"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="usage-link"
+        >
+          Check API Usage & Credits
+        </a>
+      </div>
     </div>
   );
 };

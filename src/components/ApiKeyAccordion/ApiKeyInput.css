@@ -1,11 +1,15 @@
-/* API Key Section */
+.api-key-submitted {
+  display: flex;
+  gap: 1rem;
+}
+
 .api-key-section {
-  /* Background and padding removed - handled by accordion wrapper */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .api-key-section h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
   color: #2d3748;
   font-size: 1.2rem;
 }
@@ -60,15 +64,9 @@
   box-shadow: none;
 }
 
-/* Submitted State */
-.api-key-submitted {
-  margin-bottom: 15px;
-}
-
 .api-key-status {
   color: #38a169;
   font-weight: 600;
-  margin-bottom: 10px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -97,6 +95,26 @@
   font-size: 0.9rem;
   color: #718096;
   margin: 0;
+}
+
+.usage-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 16px;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.usage-link:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
 }
 
 /* Mobile Responsiveness */
