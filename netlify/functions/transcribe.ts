@@ -134,14 +134,12 @@ export const handler: Handler = async (
       audioBuffer.length
     );
 
-    // Create a File object for OpenAI API
-    const audioFile = new File(
-      [new Uint8Array(audioBuffer)],
-      "recording.webm",
-      {
-        type: "audio/webm",
-      }
-    );
+    // Create a File object for OpenAI API (copy Buffer to Uint8Array for BlobPart compatibility)
+    const uint8 = new Uint8Array(audioBuffer.length);
+    uint8.set(audioBuffer);
+    const audioFile = new File([uint8], "recording.webm", {
+      type: "audio/webm",
+    });
 
     const allowedModels = [
       "whisper-1",

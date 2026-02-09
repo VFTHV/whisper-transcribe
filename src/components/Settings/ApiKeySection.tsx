@@ -23,7 +23,7 @@ const ApiKeySection = ({ setApiKey, onSubmitted }: Props) => {
       setIsSubmitted(true);
       setTempApiKey("");
       if (onSubmitted) {
-        setTimeout(onSubmitted, 1000);
+        onSubmitted();
       }
     }
   };

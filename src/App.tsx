@@ -7,7 +7,6 @@ import RecordingControls from "./components/RecordingControls";
 import TranscriptionActions from "./components/TranscriptionActions";
 import ErrorDisplay from "./components/ErrorDisplay";
 import TranscriptionHistory from "./components/TranscriptionHistory";
-import HeaderAccordion from "./components/HeaderAccordion";
 import {
   saveTranscription,
   getTranscriptions,
@@ -66,8 +65,6 @@ function App() {
             gap: 2,
           }}
         >
-          <HeaderAccordion />
-
           <Settings setApiKey={setApiKey} model={model} setModel={setModel} />
 
           <RecordingControls
