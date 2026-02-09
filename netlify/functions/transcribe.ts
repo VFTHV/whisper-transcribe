@@ -80,6 +80,7 @@ export const handler: Handler = async (
 
     let audioBuffer: Buffer | null = null;
     let apiKey = "";
+    let model = "";
 
     // Parse each part
     for (const part of parts) {
@@ -91,6 +92,8 @@ export const handler: Handler = async (
 
       if (headers.includes('name="apiKey"')) {
         apiKey = content.toString().trim().replace(/\r\n$/, "");
+      } else if (headers.includes('name="model"')) {
+        model = content.toString().trim().replace(/\r\n$/, "");
       } else if (headers.includes('name="audio"')) {
         // Remove trailing CRLF if present
         const contentStr = content.toString("binary");
@@ -136,10 +139,19 @@ export const handler: Handler = async (
       type: "audio/webm",
     });
 
+    const allowedModels = [
+      "whisper-1",
+      "gpt-4o-transcribe",
+      "gpt-4o-mini-transcribe",
+      "gpt-4o-transcribe-diarize",
+    ];
+    const transcriptionModel =
+      model && allowedModels.includes(model) ? model : "whisper-1";
+
     // Send to OpenAI Whisper API
     const transcription = await openai.audio.transcriptions.create({
       file: audioFile,
-      model: "whisper-1",
+      model: transcriptionModel,
       response_format: "json",
       prompt:
         "This transcription is about React code with TypeScript, JavaScript, sometimes using reselect library, async selector kit library, and also having Express server. The content includes code snippets, function names, variable names, and programming terminology.",

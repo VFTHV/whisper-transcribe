@@ -60,11 +60,20 @@ app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
       return res.status(400).json({ error: "No audio file provided" });
     }
 
-    // Get API key from request body
-    const { apiKey } = req.body;
+    // Get API key and model from request body
+    const { apiKey, model: bodyModel } = req.body;
     if (!apiKey) {
       return res.status(400).json({ error: "OpenAI API key is required" });
     }
+
+    const allowedModels = [
+      "whisper-1",
+      "gpt-4o-transcribe",
+      "gpt-4o-mini-transcribe",
+      "gpt-4o-transcribe-diarize",
+    ];
+    const model =
+      bodyModel && allowedModels.includes(bodyModel) ? bodyModel : "whisper-1";
 
     // Initialize OpenAI with user's API key
     const openai = new OpenAI({
@@ -79,7 +88,7 @@ app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
     // Send to OpenAI Whisper API
     const transcription = await openai.audio.transcriptions.create({
       file: audioFile,
-      model: "whisper-1",
+      model,
       response_format: "json",
       prompt:
         "This transcription is about React code with TypeScript, JavaScript, sometimes using reselect library, async selector kit library, and also having Express server. The content includes code snippets, function names, variable names, and programming terminology.",

@@ -13,7 +13,7 @@ type Props = {
   onSubmitted?: () => void;
 };
 
-const ApiKeyInput = ({ setApiKey, onSubmitted }: Props) => {
+const ApiKeySection = ({ setApiKey, onSubmitted }: Props) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [tempApiKey, setTempApiKey] = useState("");
 
@@ -104,4 +104,4 @@ const ApiKeyInput = ({ setApiKey, onSubmitted }: Props) => {
   );
 };
 
-export default ApiKeyInput;
+export default ApiKeySection;

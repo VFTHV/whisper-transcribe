@@ -26,6 +26,7 @@ type Props = {
   setError: (error: string) => void;
   setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
   apiKey: string;
+  model: string;
 };
 
 const RecordingControls = ({
@@ -33,6 +34,7 @@ const RecordingControls = ({
   setError,
   setIsCopied,
   apiKey,
+  model,
 }: Props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -73,6 +75,7 @@ const RecordingControls = ({
       const formData = new FormData();
       formData.append("audio", audioBlob, "recording.webm");
       formData.append("apiKey", apiKey);
+      formData.append("model", model);
 
       const response = await fetch(getApiUrl(API_ENDPOINTS.TRANSCRIBE), {
         method: "POST",

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, Container, Paper, Typography } from "@mui/material";
-import ApiKeyAccordion from "./components/ApiKeyAccordion";
+import Settings from "./components/Settings";
+import type { TranscriptionModelId } from "./components/Settings/transcriptionModels";
 import TranscriptionEditor from "./components/TranscriptionEditor";
 import RecordingControls from "./components/RecordingControls";
 import TranscriptionActions from "./components/TranscriptionActions";
@@ -19,6 +20,7 @@ function App() {
   const [error, setError] = useState<string>("");
   const [isCopied, setIsCopied] = useState(false);
   const [apiKey, setApiKey] = useState<string>("");
+  const [model, setModel] = useState<TranscriptionModelId>("whisper-1");
   const [transcriptionHistory, setTranscriptionHistory] = useState<
     TranscriptionRecord[]
   >([]);
@@ -66,13 +68,14 @@ function App() {
         >
           <HeaderAccordion />
 
-          <ApiKeyAccordion setApiKey={setApiKey} />
+          <Settings setApiKey={setApiKey} model={model} setModel={setModel} />
 
           <RecordingControls
             setTranscription={handleNewTranscription}
             setError={setError}
             setIsCopied={setIsCopied}
             apiKey={apiKey}
+            model={model}
           />
 
           <ErrorDisplay error={error} setError={setError} />
