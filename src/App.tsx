@@ -47,13 +47,18 @@ function App() {
   };
 
   return (
-    <Box sx={{ p: 2, pt: 6 }}>
-      <Container maxWidth="sm">
+    <Box
+      sx={{
+        p: { xs: 0, sm: 2 },
+        pt: { xs: 5, sm: 6 },
+      }}
+    >
+      <Container maxWidth="sm" disableGutters>
         <Paper
           elevation={2}
           sx={{
-            p: 4,
-            borderRadius: 3,
+            p: { xs: 2, sm: 4 },
+            borderRadius: { xs: 0, sm: 3 },
             display: "flex",
             flexDirection: "column",
             gap: 2,
