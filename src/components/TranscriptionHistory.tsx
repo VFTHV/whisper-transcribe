@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { FiCheck, FiCopy, FiTrash2 } from "react-icons/fi";
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+} from "@mui/material";
+import { Check, ContentCopy, Delete } from "@mui/icons-material";
 import {
   MIN_WORDS,
   STORED_TRANSCRIPTIONS,
@@ -29,35 +37,68 @@ const TranscriptionHistory = ({
 
   if (transcriptions.length === 0) {
     return (
-      <div className="transcription-history">
-        <h3>
-          📜 Previous {STORED_TRANSCRIPTIONS} Transcriptions (minimum{" "}
-          {MIN_WORDS} words)
-        </h3>
-        <p className="no-transcriptions">No previous transcriptions yet.</p>
-      </div>
+      <Box>
+        <Typography variant="subtitle1" fontWeight={600} textAlign="center">
+          Previous {STORED_TRANSCRIPTIONS} Transcriptions (minimum {MIN_WORDS}{" "}
+          words)
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          textAlign="center"
+          sx={{ py: 2, fontStyle: "italic" }}
+        >
+          No previous transcriptions yet.
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="transcription-history">
-      <h3>
-        📜 Previous {STORED_TRANSCRIPTIONS} Transcriptions (minimum {MIN_WORDS}{" "}
+    <Box>
+      <Typography variant="subtitle1" fontWeight={600} textAlign="center" sx={{ mb: 1 }}>
+        Previous {STORED_TRANSCRIPTIONS} Transcriptions (minimum {MIN_WORDS}{" "}
         words)
-      </h3>
-      <div className="transcription-list">
+      </Typography>
+      <List
+        sx={{
+          maxHeight: 300,
+          overflow: "auto",
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 1,
+          bgcolor: "action.hover",
+          py: 0,
+        }}
+      >
         {transcriptions.map((transcription) => (
-          <div key={transcription.id} className="transcription-item">
-            <div className="transcription-item-header">
-              <div className="transcription-date">{transcription.date}</div>
-              <div className="transcription-actions">
-                <button
-                  className={`copy-button ${
-                    copiedId === transcription.id ? "copied" : ""
-                  }`}
+          <ListItem
+            key={transcription.id}
+            sx={{
+              borderBottom: "1px solid",
+              borderColor: "divider",
+              flexDirection: "column",
+              alignItems: "stretch",
+              "&:last-child": { borderBottom: "none" },
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="caption" color="text.secondary">
+                {transcription.date}
+              </Typography>
+              <Box>
+                <IconButton
+                  size="small"
                   onClick={() =>
                     copyToClipboard(transcription.text, transcription.id)
                   }
+                  color={copiedId === transcription.id ? "success" : "default"}
                   title={
                     copiedId === transcription.id
                       ? "Copied!"
@@ -65,26 +106,32 @@ const TranscriptionHistory = ({
                   }
                 >
                   {copiedId === transcription.id ? (
-                    <FiCheck size={14} />
+                    <Check fontSize="small" />
                   ) : (
-                    <FiCopy size={14} />
+                    <ContentCopy fontSize="small" />
                   )}
-                </button>
-                <button
-                  className="delete-button"
+                </IconButton>
+                <IconButton
+                  size="small"
                   onClick={() => onDeleteTranscription(transcription.id)}
                   title="Delete transcription"
+                  color="error"
                 >
-                  <FiTrash2 size={14} />
-                </button>
-              </div>
-            </div>
-
-            <div className="transcription-text">{transcription.text}</div>
-          </div>
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Box>
+            </Box>
+            <ListItemText
+              primary={transcription.text}
+              primaryTypographyProps={{
+                variant: "body2",
+                sx: { wordBreak: "break-word" },
+              }}
+            />
+          </ListItem>
         ))}
-      </div>
-    </div>
+      </List>
+    </Box>
   );
 };
 

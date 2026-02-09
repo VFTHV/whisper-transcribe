@@ -1,17 +1,32 @@
 import { useState, useRef } from "react";
-import { FaPlay, FaPause, FaCircle } from "react-icons/fa";
+import { Box, IconButton, Stack } from "@mui/material";
+import {
+  FiberManualRecord,
+  PlayArrow,
+  Pause,
+  Cancel,
+} from "@mui/icons-material";
+import { keyframes } from "@emotion/react";
+
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
 import HookWrapper from "./HookWrapper";
 import RecordingTimer from "./RecordingTimer";
-import "./RecordingControls.css";
-import { BsXSquareFill } from "react-icons/bs";
-import { ImSpinner } from "react-icons/im";
 import { getApiUrl, API_ENDPOINTS } from "../../utils/apiConfig";
+
+const recordBlink = keyframes`
+  0%, 50% { opacity: 1; transform: scale(1); }
+  25%, 75% { opacity: 0.7; transform: scale(1.05); }
+`;
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
   setError: (error: string) => void;
   setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
   apiKey: string;
+  model: string;
 };
 
 const RecordingControls = ({
@@ -19,6 +34,7 @@ const RecordingControls = ({
   setError,
   setIsCopied,
   apiKey,
+  model,
 }: Props) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -30,12 +46,10 @@ const RecordingControls = ({
 
   const onTranscriptionComplete = async (newTranscription: string) => {
     setTranscription(newTranscription);
-    // Auto-copy to clipboard
     try {
       await navigator.clipboard.writeText(newTranscription);
-      // Show copied feedback
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000); // Brief trigger
+      setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error("Failed to auto-copy to clipboard:", err);
     }
@@ -61,6 +75,7 @@ const RecordingControls = ({
       const formData = new FormData();
       formData.append("audio", audioBlob, "recording.webm");
       formData.append("apiKey", apiKey);
+      formData.append("model", model);
 
       const response = await fetch(getApiUrl(API_ENDPOINTS.TRANSCRIBE), {
         method: "POST",
@@ -103,7 +118,7 @@ const RecordingControls = ({
 
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
-      shouldProcessRef.current = false; // Reset the flag
+      shouldProcessRef.current = false;
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -112,7 +127,6 @@ const RecordingControls = ({
       };
 
       mediaRecorder.onstop = async () => {
-        // Only process audio if we're not canceling
         if (shouldProcessRef.current) {
           const audioBlob = new Blob(audioChunksRef.current, {
             type: "audio/webm",
@@ -125,10 +139,9 @@ const RecordingControls = ({
       mediaRecorder.start();
       setIsRecording(true);
 
-      // Show notification if tab is not active
       if (document.hidden) {
         if ("Notification" in window && Notification.permission === "granted") {
-          new Notification("🎤 Recording Started", {
+          new Notification("Recording Started", {
             body: "Voice recording is now active. Press Ctrl+K to stop.",
             icon: "/vite.svg",
           });
@@ -158,22 +171,28 @@ const RecordingControls = ({
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      shouldProcessRef.current = true; // Set flag to process audio
+      shouldProcessRef.current = true;
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-      setIsPaused(false); // Reset pause state
+      setIsPaused(false);
     }
   };
 
   const cancelRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      shouldProcessRef.current = false; // Set flag to NOT process audio
+      shouldProcessRef.current = false;
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-      setIsPaused(false); // Reset pause state
-      audioChunksRef.current = []; // Clear the audio chunks
+      setIsPaused(false);
+      audioChunksRef.current = [];
     }
   };
+
+  const iconSx = {
+    fontSize: 32,
+    transition: "all 0.2s ease",
+  };
+  const disabledSx = { opacity: 0.3, cursor: "not-allowed" };
 
   return (
     <>
@@ -187,61 +206,110 @@ const RecordingControls = ({
         cancelRecording={cancelRecording}
       />
 
-      <div className="tape-recorder-controls">
-        {/* Record/Stop Button */}
-        {isProcessing ? (
-          <ImSpinner className="processing-spinner" />
-        ) : (
-          // </div>
-          <FaCircle
-            className={`tape-icon record-icon ${
-              isRecording ? "recording" : ""
-            } ${isRecording && !isPaused ? "active" : ""} ${
-              isProcessing ? "disabled" : ""
-            }`}
+      <Stack
+        direction="column"
+        alignItems="stretch"
+        spacing={2}
+        sx={{
+          p: 3,
+          borderRadius: 2,
+          border: "2px solid",
+          borderColor: "divider",
+          bgcolor: "action.hover",
+        }}
+      >
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={1}
+        >
+          {isProcessing ? (
+            <Box
+              component="span"
+              sx={{
+                display: "inline-flex",
+                width: 40,
+                height: 40,
+                border: "3px solid",
+                borderColor: "primary.main",
+                borderTopColor: "transparent",
+                borderRadius: "50%",
+                animation: `${spin} 1s linear infinite`,
+              }}
+            />
+          ) : (
+            <IconButton
+              onClick={isRecording ? stopRecording : startRecording}
+              disabled={isProcessing}
+              sx={{
+                color: isRecording ? "error.main" : "grey.500",
+                ...(isRecording &&
+                  !isPaused && {
+                    animation: `${recordBlink} 1s infinite`,
+                  }),
+                "&:hover:not(:disabled)": {
+                  color: isRecording ? "error.dark" : "error.light",
+                },
+                ...iconSx,
+              }}
+              title={isRecording ? "Stop Recording" : "Start Recording"}
+            >
+              <FiberManualRecord sx={{ fontSize: 36 }} />
+            </IconButton>
+          )}
+
+          <IconButton
+            onClick={isPaused && !isProcessing ? resumeRecording : undefined}
+            disabled={isProcessing || !isRecording || !isPaused}
+            sx={{
+              color: isPaused ? "success.main" : "grey.500",
+              "&:hover:not(:disabled)": { color: "success.light" },
+              ...iconSx,
+              ...(isProcessing || !isRecording || !isPaused ? disabledSx : {}),
+            }}
+            title="Resume Recording"
+          >
+            <PlayArrow sx={{ fontSize: 32 }} />
+          </IconButton>
+
+          <IconButton
             onClick={
-              isProcessing
-                ? undefined
-                : isRecording
-                ? stopRecording
-                : startRecording
+              isRecording && !isPaused && !isProcessing
+                ? pauseRecording
+                : undefined
             }
-            title={isRecording ? "Stop Recording" : "Start Recording"}
-          />
-        )}
+            disabled={isProcessing || !isRecording || isPaused}
+            sx={{
+              color: isRecording && !isPaused ? "warning.main" : "grey.500",
+              "&:hover:not(:disabled)": { color: "warning.light" },
+              ...iconSx,
+              ...(isProcessing || !isRecording || isPaused ? disabledSx : {}),
+            }}
+            title="Pause Recording"
+          >
+            <Pause sx={{ fontSize: 32 }} />
+          </IconButton>
 
-        {/* Play/Resume Button */}
-        <FaPlay
-          className={`tape-icon play-icon ${isPaused ? "active" : ""} ${
-            isProcessing || !isRecording || !isPaused ? "disabled" : ""
-          }`}
-          onClick={isPaused && !isProcessing ? resumeRecording : undefined}
-          title="Resume Recording"
-        />
+          <IconButton
+            onClick={isRecording && !isProcessing ? cancelRecording : undefined}
+            disabled={isProcessing || !isRecording}
+            sx={{
+              color: isRecording ? "error.main" : "grey.500",
+              "&:hover:not(:disabled)": { color: "error.light" },
+              ...iconSx,
+              ...(isProcessing || !isRecording ? disabledSx : {}),
+            }}
+            title="Cancel Recording"
+          >
+            <Cancel sx={{ fontSize: 32 }} />
+          </IconButton>
+        </Stack>
 
-        {/* Pause Button */}
-        <FaPause
-          className={`tape-icon pause-icon ${
-            isRecording && !isPaused ? "active" : ""
-          } ${isProcessing || !isRecording || isPaused ? "disabled" : ""}`}
-          onClick={
-            isRecording && !isPaused && !isProcessing
-              ? pauseRecording
-              : undefined
-          }
-          title="Pause Recording"
-        />
-
-        {/* Cancel Button */}
-        <BsXSquareFill
-          className={`tape-icon cancel-icon ${isRecording ? "active" : ""} ${
-            isProcessing || !isRecording ? "disabled" : ""
-          }`}
-          onClick={isRecording && !isProcessing ? cancelRecording : undefined}
-          title="Cancel Recording"
-        />
-        <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
-      </div>
+        <Stack direction="row" justifyContent="center">
+          <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
+        </Stack>
+      </Stack>
     </>
   );
 };
