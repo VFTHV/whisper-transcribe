@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Stack } from "@mui/material";
 import {
   FiberManualRecord,
   PlayArrow,
@@ -203,100 +203,110 @@ const RecordingControls = ({
         cancelRecording={cancelRecording}
       />
 
-      <Box
+      <Stack
+        direction="column"
+        alignItems="stretch"
+        spacing={2}
         sx={{
-          display: "flex",
-          gap: 2.5,
-          justifyContent: "center",
-          alignItems: "center",
-          bgcolor: "grey.900",
           p: 3,
           borderRadius: 2,
           border: "2px solid",
-          borderColor: "grey.800",
-          boxShadow: "inset 0 0 20px rgba(0,0,0,0.3)",
+          borderColor: "divider",
+          bgcolor: "action.hover",
         }}
       >
-        {isProcessing ? (
-          <Box
-            component="span"
-            sx={{
-              display: "inline-flex",
-              width: 40,
-              height: 40,
-              border: "3px solid",
-              borderColor: "primary.main",
-              borderTopColor: "transparent",
-              borderRadius: "50%",
-              animation: `${spin} 1s linear infinite`,
-            }}
-          />
-        ) : (
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={1}
+        >
+          {isProcessing ? (
+            <Box
+              component="span"
+              sx={{
+                display: "inline-flex",
+                width: 40,
+                height: 40,
+                border: "3px solid",
+                borderColor: "primary.main",
+                borderTopColor: "transparent",
+                borderRadius: "50%",
+                animation: `${spin} 1s linear infinite`,
+              }}
+            />
+          ) : (
+            <IconButton
+              onClick={isRecording ? stopRecording : startRecording}
+              disabled={isProcessing}
+              sx={{
+                color: isRecording ? "error.main" : "grey.500",
+                ...(isRecording &&
+                  !isPaused && {
+                    animation: `${recordBlink} 1s infinite`,
+                  }),
+                "&:hover:not(:disabled)": {
+                  color: isRecording ? "error.dark" : "error.light",
+                },
+                ...iconSx,
+              }}
+              title={isRecording ? "Stop Recording" : "Start Recording"}
+            >
+              <FiberManualRecord sx={{ fontSize: 36 }} />
+            </IconButton>
+          )}
+
           <IconButton
-            onClick={isRecording ? stopRecording : startRecording}
-            disabled={isProcessing}
+            onClick={isPaused && !isProcessing ? resumeRecording : undefined}
+            disabled={isProcessing || !isRecording || !isPaused}
+            sx={{
+              color: isPaused ? "success.main" : "grey.500",
+              "&:hover:not(:disabled)": { color: "success.light" },
+              ...iconSx,
+              ...(isProcessing || !isRecording || !isPaused ? disabledSx : {}),
+            }}
+            title="Resume Recording"
+          >
+            <PlayArrow sx={{ fontSize: 32 }} />
+          </IconButton>
+
+          <IconButton
+            onClick={
+              isRecording && !isPaused && !isProcessing
+                ? pauseRecording
+                : undefined
+            }
+            disabled={isProcessing || !isRecording || isPaused}
+            sx={{
+              color: isRecording && !isPaused ? "warning.main" : "grey.500",
+              "&:hover:not(:disabled)": { color: "warning.light" },
+              ...iconSx,
+              ...(isProcessing || !isRecording || isPaused ? disabledSx : {}),
+            }}
+            title="Pause Recording"
+          >
+            <Pause sx={{ fontSize: 32 }} />
+          </IconButton>
+
+          <IconButton
+            onClick={isRecording && !isProcessing ? cancelRecording : undefined}
+            disabled={isProcessing || !isRecording}
             sx={{
               color: isRecording ? "error.main" : "grey.500",
-              ...(isRecording && !isPaused && {
-                animation: `${recordBlink} 1s infinite`,
-              }),
-              "&:hover:not(:disabled)": {
-                color: isRecording ? "error.dark" : "error.light",
-              },
+              "&:hover:not(:disabled)": { color: "error.light" },
               ...iconSx,
+              ...(isProcessing || !isRecording ? disabledSx : {}),
             }}
-            title={isRecording ? "Stop Recording" : "Start Recording"}
+            title="Cancel Recording"
           >
-            <FiberManualRecord sx={{ fontSize: 36 }} />
+            <Cancel sx={{ fontSize: 32 }} />
           </IconButton>
-        )}
+        </Stack>
 
-        <IconButton
-          onClick={isPaused && !isProcessing ? resumeRecording : undefined}
-          disabled={isProcessing || !isRecording || !isPaused}
-          sx={{
-            color: isPaused ? "success.main" : "grey.500",
-            "&:hover:not(:disabled)": { color: "success.light" },
-            ...iconSx,
-            ...(isProcessing || !isRecording || !isPaused ? disabledSx : {}),
-          }}
-          title="Resume Recording"
-        >
-          <PlayArrow sx={{ fontSize: 32 }} />
-        </IconButton>
-
-        <IconButton
-          onClick={
-            isRecording && !isPaused && !isProcessing ? pauseRecording : undefined
-          }
-          disabled={isProcessing || !isRecording || isPaused}
-          sx={{
-            color: isRecording && !isPaused ? "warning.main" : "grey.500",
-            "&:hover:not(:disabled)": { color: "warning.light" },
-            ...iconSx,
-            ...(isProcessing || !isRecording || isPaused ? disabledSx : {}),
-          }}
-          title="Pause Recording"
-        >
-          <Pause sx={{ fontSize: 32 }} />
-        </IconButton>
-
-        <IconButton
-          onClick={isRecording && !isProcessing ? cancelRecording : undefined}
-          disabled={isProcessing || !isRecording}
-          sx={{
-            color: isRecording ? "error.main" : "grey.500",
-            "&:hover:not(:disabled)": { color: "error.light" },
-            ...iconSx,
-            ...(isProcessing || !isRecording ? disabledSx : {}),
-          }}
-          title="Cancel Recording"
-        >
-          <Cancel sx={{ fontSize: 32 }} />
-        </IconButton>
-
-        <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
-      </Box>
+        <Stack direction="row" justifyContent="center">
+          <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
+        </Stack>
+      </Stack>
     </>
   );
 };
