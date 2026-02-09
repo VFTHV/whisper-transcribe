@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import "./RecordingTimer.css";
+import { Box, Typography } from "@mui/material";
+import { Mic, Pause } from "@mui/icons-material";
 
 type Props = {
   isRecording: boolean;
@@ -13,7 +14,6 @@ const RecordingTimer = ({ isRecording, isPaused }: Props) => {
   const pauseStartTimeRef = useRef<number>(0);
   const animationFrameRef = useRef<number>(0);
 
-  // Format time as MM:SS
   const formatTime = useCallback((seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -22,12 +22,8 @@ const RecordingTimer = ({ isRecording, isPaused }: Props) => {
       .padStart(2, "0")}`;
   }, []);
 
-  // Update recording time
   const updateRecordingTime = useCallback(() => {
     if (!isRecording || isPaused) return;
-
-    console.log("update recording time");
-
     const currentTime = Date.now();
     const elapsedTime =
       (currentTime -
@@ -35,11 +31,9 @@ const RecordingTimer = ({ isRecording, isPaused }: Props) => {
         totalPausedTimeRef.current) /
       1000;
     setRecordingTime(elapsedTime);
-
     animationFrameRef.current = requestAnimationFrame(updateRecordingTime);
   }, [isRecording, isPaused]);
 
-  // Reset timer
   const resetTimer = useCallback(() => {
     setRecordingTime(0);
     recordingStartTimeRef.current = 0;
@@ -51,14 +45,12 @@ const RecordingTimer = ({ isRecording, isPaused }: Props) => {
     }
   }, []);
 
-  // Start timer
   const startTimer = useCallback(() => {
     recordingStartTimeRef.current = Date.now();
     totalPausedTimeRef.current = 0;
     updateRecordingTime();
   }, [updateRecordingTime]);
 
-  // Pause timer
   const pauseTimer = useCallback(() => {
     pauseStartTimeRef.current = Date.now();
     if (animationFrameRef.current) {
@@ -67,7 +59,6 @@ const RecordingTimer = ({ isRecording, isPaused }: Props) => {
     }
   }, []);
 
-  // Resume timer
   const resumeTimer = useCallback(() => {
     if (pauseStartTimeRef.current > 0) {
       totalPausedTimeRef.current += Date.now() - pauseStartTimeRef.current;
@@ -76,26 +67,20 @@ const RecordingTimer = ({ isRecording, isPaused }: Props) => {
     updateRecordingTime();
   }, [updateRecordingTime]);
 
-  // Handle recording state changes
   useEffect(() => {
     if (isRecording && !isPaused) {
       if (recordingStartTimeRef.current === 0) {
-        // Starting new recording
         startTimer();
       } else {
-        // Resuming from pause
         resumeTimer();
       }
     } else if (isRecording && isPaused) {
-      // Pausing
       pauseTimer();
     } else if (!isRecording) {
-      // Stopping or canceling
       resetTimer();
     }
   }, [isRecording, isPaused, startTimer, pauseTimer, resumeTimer, resetTimer]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (animationFrameRef.current) {
@@ -105,13 +90,28 @@ const RecordingTimer = ({ isRecording, isPaused }: Props) => {
   }, []);
 
   return (
-    <div className="recording-timer">
-      <div className="timer-display">
-        <span className="timer-icon">🎤</span>
-        <span className="timer-text">{formatTime(recordingTime)}</span>
-        {isPaused && <span className="paused-indicator">⏸️</span>}
-      </div>
-    </div>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          bgcolor: "primary.main",
+          color: "primary.contrastText",
+          px: 2.5,
+          py: 1.5,
+          borderRadius: 4,
+          fontFamily: "monospace",
+          fontWeight: "bold",
+        }}
+      >
+        <Mic sx={{ fontSize: 20 }} />
+        <Typography variant="body1" sx={{ minWidth: 60, textAlign: "center" }}>
+          {formatTime(recordingTime)}
+        </Typography>
+        {isPaused && <Pause sx={{ fontSize: 18 }} />}
+      </Box>
+    </Box>
   );
 };
 

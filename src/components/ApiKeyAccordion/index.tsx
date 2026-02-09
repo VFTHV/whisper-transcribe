@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Box,
+} from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
 import ApiKeyInput from "./ApiKeyInput";
 
 type Props = {
@@ -7,35 +14,34 @@ type Props = {
 };
 
 const ApiKeyAccordion = ({ setApiKey }: Props) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const toggleAccordion = () => {
-    setIsExpanded(!isExpanded);
-  };
-
+  const [expanded, setExpanded] = useState(false);
   return (
-    <div>
-      {/* Accordion Toggle Button */}
-      <div className="header-main">
-        <button
-          className="accordion-toggle"
-          onClick={toggleAccordion}
-          aria-expanded={isExpanded}
-          aria-controls="api-key-accordion-content"
-        >
-          <span>{isExpanded ? "Hide" : "Show"} API Key Settings</span>
-          {isExpanded ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
-        </button>
-      </div>
-
-      {/* Collapsible Content */}
-      <div
-        id="api-key-accordion-content"
-        className={`accordion-content ${isExpanded ? "expanded" : "collapsed"}`}
+    <Box>
+      <Accordion
+        expanded={expanded}
+        onChange={(_, isExp) => setExpanded(isExp)}
+        elevation={0}
+        sx={{
+          bgcolor: "action.hover",
+          border: "1px solid",
+          borderColor: "primary.main",
+          borderRadius: 2,
+          "&:before": { display: "none" },
+        }}
       >
-        <ApiKeyInput setApiKey={setApiKey} setIsExpanded={setIsExpanded} />
-      </div>
-    </div>
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          sx={{
+            "& .MuiAccordionSummary-content": { my: 1 },
+          }}
+        >
+          <Typography fontWeight={500}>API Key Settings</Typography>
+        </AccordionSummary>
+        <AccordionDetails sx={{ pt: 0, borderTop: "1px solid", borderColor: "action.selected" }}>
+          <ApiKeyInput setApiKey={setApiKey} onSubmitted={() => setExpanded(false)} />
+        </AccordionDetails>
+      </Accordion>
+    </Box>
   );
 };
 

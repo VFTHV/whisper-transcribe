@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Box, Container, Paper, Typography } from "@mui/material";
 import ApiKeyAccordion from "./components/ApiKeyAccordion";
 import TranscriptionEditor from "./components/TranscriptionEditor";
 import RecordingControls from "./components/RecordingControls";
@@ -12,7 +13,6 @@ import {
   deleteTranscription,
   TranscriptionRecord,
 } from "./utils/transcriptionStorage";
-import "./App.css";
 
 function App() {
   const [transcription, setTranscription] = useState<string>("");
@@ -23,7 +23,6 @@ function App() {
     TranscriptionRecord[]
   >([]);
 
-  // Load transcription history on component mount
   useEffect(() => {
     const history = getTranscriptions();
     setTranscriptionHistory(history);
@@ -31,8 +30,6 @@ function App() {
 
   const handleNewTranscription = (newTranscription: string) => {
     setTranscription(newTranscription);
-
-    // Save to history (only if it meets the minimum word requirement)
     const savedRecord = saveTranscription(newTranscription);
     if (savedRecord) {
       setTranscriptionHistory((prev) => [savedRecord, ...prev]);
@@ -50,45 +47,71 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <div className="container">
-        <HeaderAccordion />
+    <Box sx={{ p: 2, pt: 6 }}>
+      <Container maxWidth="sm">
+        <Paper
+          elevation={2}
+          sx={{
+            p: 4,
+            borderRadius: 3,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <HeaderAccordion />
 
-        <ApiKeyAccordion setApiKey={setApiKey} />
+          <ApiKeyAccordion setApiKey={setApiKey} />
 
-        <RecordingControls
-          setTranscription={handleNewTranscription}
-          setError={setError}
-          setIsCopied={setIsCopied}
-          apiKey={apiKey}
-        />
+          <RecordingControls
+            setTranscription={handleNewTranscription}
+            setError={setError}
+            setIsCopied={setIsCopied}
+            apiKey={apiKey}
+          />
 
-        <ErrorDisplay error={error} setError={setError} />
+          <ErrorDisplay error={error} setError={setError} />
 
-        {transcription && (
-          <div className="transcription-section">
-            <div className="transcription-header">
-              <h3>📝 Transcription</h3>
-              <TranscriptionActions
-                transcription={transcription}
-                onClear={clearTranscription}
-                isCopied={isCopied}
-                setIsCopied={setIsCopied}
+          {transcription && (
+            <Box
+              sx={{
+                bgcolor: "action.hover",
+                borderRadius: 2,
+                p: 3,
+                border: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 2,
+                }}
+              >
+                <Typography variant="h6">Transcription</Typography>
+                <TranscriptionActions
+                  transcription={transcription}
+                  onClear={clearTranscription}
+                  isCopied={isCopied}
+                  setIsCopied={setIsCopied}
+                />
+              </Box>
+              <TranscriptionEditor
+                value={transcription}
+                onChange={setTranscription}
               />
-            </div>
-            <TranscriptionEditor
-              value={transcription}
-              onChange={setTranscription}
-            />
-          </div>
-        )}
+            </Box>
+          )}
 
-        <TranscriptionHistory
-          transcriptions={transcriptionHistory}
-          onDeleteTranscription={handleDeleteTranscription}
-        />
-      </div>
-    </div>
+          <TranscriptionHistory
+            transcriptions={transcriptionHistory}
+            onDeleteTranscription={handleDeleteTranscription}
+          />
+        </Paper>
+      </Container>
+    </Box>
   );
 }
 

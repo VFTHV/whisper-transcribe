@@ -1,5 +1,5 @@
-import { FiCheck } from "react-icons/fi";
-import { MdContentCopy } from "react-icons/md";
+import { Button, IconButton, Box } from "@mui/material";
+import { Check, ContentCopy } from "@mui/icons-material";
 
 type Props = {
   transcription: string;
@@ -18,25 +18,25 @@ const TranscriptionActions = ({
     try {
       await navigator.clipboard.writeText(transcription);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+      setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy to clipboard:", err);
     }
   };
 
   return (
-    <div className="transcription-actions">
-      <button
-        className={`copy-button ${isCopied ? "copied" : ""}`}
+    <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+      <IconButton
         onClick={copyToClipboard}
+        color={isCopied ? "success" : "default"}
         title={isCopied ? "Copied!" : "Copy to clipboard"}
       >
-        {isCopied ? <FiCheck size={16} /> : <MdContentCopy size={16} />}
-      </button>
-      <button className="clear-button" onClick={onClear}>
+        {isCopied ? <Check /> : <ContentCopy />}
+      </IconButton>
+      <Button variant="outlined" onClick={onClear}>
         Clear
-      </button>
-    </div>
+      </Button>
+    </Box>
   );
 };
 

@@ -1,4 +1,5 @@
-import { IoMdCloseCircle } from "react-icons/io";
+import { Alert, IconButton } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 type Props = {
   error: string;
@@ -9,33 +10,16 @@ const ErrorDisplay = ({ error, setError }: Props) => {
   if (!error) return null;
 
   return (
-    <div className="error" style={{ position: "relative" }}>
-      <p>❌ {error}</p>
-
-      <button
-        onClick={() => setError("")}
-        className="error-close-button"
-        style={{
-          position: "absolute",
-          top: "8px",
-          right: "8px",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          color: "#dc3545",
-          fontSize: "18px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "0",
-          width: "20px",
-          height: "20px",
-        }}
-        title="Close error"
-      >
-        <IoMdCloseCircle />
-      </button>
-    </div>
+    <Alert
+      severity="error"
+      action={
+        <IconButton size="small" onClick={() => setError("")} title="Close error">
+          <Close fontSize="small" />
+        </IconButton>
+      }
+    >
+      {error}
+    </Alert>
   );
 };
 

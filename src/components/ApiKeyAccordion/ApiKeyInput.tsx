@@ -1,12 +1,19 @@
 import { useState } from "react";
-import "./ApiKeyInput.css";
+import {
+  TextField,
+  Button,
+  Box,
+  Stack,
+  Typography,
+  Link,
+} from "@mui/material";
 
 type Props = {
   setApiKey: (apiKey: string) => void;
-  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  onSubmitted?: () => void;
 };
 
-const ApiKeyInput = ({ setApiKey, setIsExpanded }: Props) => {
+const ApiKeyInput = ({ setApiKey, onSubmitted }: Props) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [tempApiKey, setTempApiKey] = useState("");
 
@@ -14,15 +21,17 @@ const ApiKeyInput = ({ setApiKey, setIsExpanded }: Props) => {
     if (tempApiKey.trim()) {
       setApiKey(tempApiKey);
       setIsSubmitted(true);
-      setTempApiKey(""); // Clear temp input for security
-      setTimeout(() => setIsExpanded(false), 1000);
+      setTempApiKey("");
+      if (onSubmitted) {
+        setTimeout(onSubmitted, 1000);
+      }
     }
   };
 
   const handleReenter = () => {
     setIsSubmitted(false);
     setTempApiKey("");
-    setApiKey(""); // Clear the stored API key
+    setApiKey("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -32,53 +41,66 @@ const ApiKeyInput = ({ setApiKey, setIsExpanded }: Props) => {
   };
 
   return (
-    <div className="api-key-section">
-      <h3>🔑 OpenAI API Key</h3>
+    <Stack spacing={1}>
+      <Typography variant="subtitle1" fontWeight={600}>
+        OpenAI API Key
+      </Typography>
 
       {!isSubmitted ? (
-        <div className="api-key-input-container">
-          <input
+        <Box sx={{ display: "flex", gap: 1.25, flexWrap: "wrap" }}>
+          <TextField
             type="password"
             placeholder="Enter your OpenAI API key (sk-...)"
             value={tempApiKey}
             onChange={(e) => setTempApiKey(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="api-key-input"
+            onKeyDown={handleKeyPress}
+            variant="outlined"
+            size="small"
+            fullWidth
+            sx={{ flex: 1, minWidth: 200 }}
           />
-          <button
+          <Button
+            variant="contained"
             onClick={handleSubmit}
             disabled={!tempApiKey.trim()}
-            className="api-key-submit-btn"
           >
             Submit
-          </button>
-        </div>
+          </Button>
+        </Box>
       ) : (
-        <div className="api-key-submitted">
-          <button onClick={handleReenter} className="api-key-reenter-btn">
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
+          <Button variant="outlined" onClick={handleReenter}>
             Re-enter API Key
-          </button>
-          <p className="api-key-status">
-            ✅ API key submitted and ready to use
-          </p>
-        </div>
+          </Button>
+          <Typography variant="body2" color="success.main" fontWeight={600}>
+            API key submitted and ready to use
+          </Typography>
+        </Box>
       )}
 
-      <p className="api-key-help">
+      <Typography variant="body2" color="text.secondary">
         Your API key is only sent to the server for processing and never stored.
-      </p>
+      </Typography>
 
-      <div>
-        <a
-          href="https://platform.openai.com/usage"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="usage-link"
-        >
-          Check API Usage & Credits
-        </a>
-      </div>
-    </div>
+      <Link
+        href="https://platform.openai.com/usage"
+        target="_blank"
+        rel="noopener noreferrer"
+        underline="hover"
+        sx={{
+          display: "inline-flex",
+          alignSelf: "flex-start",
+          border: "2px solid",
+          borderColor: "primary.main",
+          borderRadius: 1,
+          px: 2,
+          py: 1,
+          bgcolor: "action.hover",
+        }}
+      >
+        Check API Usage & Credits
+      </Link>
+    </Stack>
   );
 };
 
