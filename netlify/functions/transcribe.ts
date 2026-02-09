@@ -148,14 +148,17 @@ export const handler: Handler = async (
     const transcriptionModel =
       model && allowedModels.includes(model) ? model : "whisper-1";
 
-    // Send to OpenAI Whisper API
-    const transcription = await openai.audio.transcriptions.create({
+    // Send to OpenAI Whisper API (diarize model does not support prompt)
+    const createOptions = {
       file: audioFile,
       model: transcriptionModel,
-      response_format: "json",
-      prompt:
-        "This transcription is about React code with TypeScript, JavaScript, sometimes using reselect library, async selector kit library, and also having Express server. The content includes code snippets, function names, variable names, and programming terminology.",
-    });
+      response_format: "json" as const,
+      ...(transcriptionModel !== "gpt-4o-transcribe-diarize" && {
+        prompt:
+          "This transcription is about React code with TypeScript, JavaScript, sometimes using reselect library, async selector kit library, and also having Express server. The content includes code snippets, function names, variable names, and programming terminology.",
+      }),
+    };
+    const transcription = await openai.audio.transcriptions.create(createOptions);
 
     console.log("Transcription completed:", transcription.text);
 

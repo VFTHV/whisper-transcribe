@@ -85,14 +85,17 @@ app.post("/api/transcribe", upload.single("audio"), async (req, res) => {
     // Create file stream for OpenAI
     const audioFile = fs.createReadStream(req.file.path);
 
-    // Send to OpenAI Whisper API
-    const transcription = await openai.audio.transcriptions.create({
+    // Send to OpenAI Whisper API (diarize model does not support prompt)
+    const createOptions = {
       file: audioFile,
       model,
-      response_format: "json",
-      prompt:
-        "This transcription is about React code with TypeScript, JavaScript, sometimes using reselect library, async selector kit library, and also having Express server. The content includes code snippets, function names, variable names, and programming terminology.",
-    });
+      response_format: "json" as const,
+      ...(model !== "gpt-4o-transcribe-diarize" && {
+        prompt:
+          "This transcription is about React code with TypeScript, JavaScript, sometimes using reselect library, async selector kit library, and also having Express server. The content includes code snippets, function names, variable names, and programming terminology.",
+      }),
+    };
+    const transcription = await openai.audio.transcriptions.create(createOptions);
 
     // Clean up the uploaded file
     fs.unlinkSync(req.file.path);
