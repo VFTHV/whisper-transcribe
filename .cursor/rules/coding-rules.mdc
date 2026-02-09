@@ -1,0 +1,56 @@
+---
+alwaysApply: true
+---
+
+# Commit Standards
+
+## Commit Command Handling
+
+When the user says **"commit changes"** or **"commit"**, run `git add .`, analyze changes to determine commit type, create a Conventional Commits message (max 15 words, one line), commit with `git commit -m "message"`
+
+## Pull Request Command Handling
+
+When the user says **"create pull request"**, use GitHub MCP to create a pull request from the current branch to the stage branch in the current repository. Get the current branch name and create PR with appropriate title and description. The PR title must be formatted as: YYMMDD - [title] (two digits for year, two digits for month, two digits for day, then dash, then the pull request title).
+
+When the user says **"pull request summary"**, use GitHub MCP to update the pull request description with a summary. The summary should be numbered points, each point maximum a couple of sentences.
+
+## Commit Message Requirements
+
+- **One line only** - No multi-line messages
+- **Conventional Commits format** - Use type prefix: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`, `perf:`, `style:`
+- **Maximum 15 words** - Keep concise and focused
+- **Imperative mood** - "add feature" not "added feature"
+- **No trailing period**
+
+Examples: `feat: add sensor offset parsing to INI parser`, `fix: resolve PDF export theme issue`, `docs: update README with application features`
+
+# React Component Standards
+
+## Component Declaration
+
+Declare React components as a `const` and use `export default` at the bottom. Do **not** use `export default function`.
+
+**Correct:**
+```tsx
+type Props = {
+  title: string;
+  onClick?: () => void;
+};
+
+const MyComponent = ({ title, onClick }: Props) => {
+  return <div>{title}</div>;
+};
+
+export default MyComponent;
+```
+
+**Incorrect:**
+```tsx
+export default function MyComponent(props: MyComponentProps) { ... }
+```
+
+## Props Type
+
+- Only create a type for props
+- The type name must be **`Props`** (not `ComponentNameProps` or similar)
+- Do not name the parameter after the component (e.g. avoid `MyComponentProps`)
