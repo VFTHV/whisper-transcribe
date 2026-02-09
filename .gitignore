@@ -30,8 +30,6 @@ dist-ssr
 .env.test.local
 .env.production.local
 
-# Server uploads
-server/uploads/
 
 # Local Netlify folder
 .netlify

@@ -135,9 +135,13 @@ export const handler: Handler = async (
     );
 
     // Create a File object for OpenAI API
-    const audioFile = new File([audioBuffer], "recording.webm", {
-      type: "audio/webm",
-    });
+    const audioFile = new File(
+      [new Uint8Array(audioBuffer)],
+      "recording.webm",
+      {
+        type: "audio/webm",
+      }
+    );
 
     const allowedModels = [
       "whisper-1",
@@ -158,7 +162,9 @@ export const handler: Handler = async (
           "This transcription is about React code with TypeScript, JavaScript, sometimes using reselect library, async selector kit library, and also having Express server. The content includes code snippets, function names, variable names, and programming terminology.",
       }),
     };
-    const transcription = await openai.audio.transcriptions.create(createOptions);
+    const transcription = await openai.audio.transcriptions.create(
+      createOptions
+    );
 
     console.log("Transcription completed:", transcription.text);
 
@@ -171,10 +177,6 @@ export const handler: Handler = async (
       body: JSON.stringify({
         success: true,
         transcription: transcription.text,
-        // Note: language property might not be available in all OpenAI responses
-        ...((transcription as any).language && {
-          language: (transcription as any).language,
-        }),
       }),
     };
   } catch (error) {
