@@ -39,13 +39,10 @@ const InstructionsAccordion = ({ expanded, onChange }: Props) => {
           "& .MuiAccordionSummary-content": { my: 1 },
         }}
       >
-        <Typography fontWeight={500}>
-          Instructions & Shortcuts
-        </Typography>
+        <Typography fontWeight={500}>Instructions & Shortcuts</Typography>
       </AccordionSummary>
       <AccordionDetails
         sx={{
-          pt: 0,
           borderTop: "1px solid",
           borderColor: "action.selected",
         }}
@@ -113,7 +110,9 @@ const InstructionsAccordion = ({ expanded, onChange }: Props) => {
             How to use:
           </Typography>
           <Box component="ol" sx={{ pl: 2.5, m: 0, "& li": { mb: 0.5 } }}>
-            <li>Click &quot;Start Recording&quot; to begin recording your voice</li>
+            <li>
+              Click &quot;Start Recording&quot; to begin recording your voice
+            </li>
             <li>Speak clearly into your microphone</li>
             <li>Click &quot;Stop Recording&quot; when you&apos;re done</li>
             <li>Wait for the transcription to appear below</li>

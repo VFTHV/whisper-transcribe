@@ -77,8 +77,10 @@ const Settings = ({ setApiKey, model, setModel }: Props) => {
               borderTop: "1px solid",
               borderTopColor: "primary.main",
             }),
-            borderTopLeftRadius: expanded === "instructions" || expanded === "settings" ? 0 : 2,
-            borderTopRightRadius: expanded === "instructions" || expanded === "settings" ? 0 : 2,
+            borderTopLeftRadius:
+              expanded === "instructions" || expanded === "settings" ? 0 : 2,
+            borderTopRightRadius:
+              expanded === "instructions" || expanded === "settings" ? 0 : 2,
             borderBottomLeftRadius: 2,
             borderBottomRightRadius: 2,
             "&:before": { display: "none" },
@@ -94,7 +96,6 @@ const Settings = ({ setApiKey, model, setModel }: Props) => {
           </AccordionSummary>
           <AccordionDetails
             sx={{
-              pt: 0,
               borderTop: "1px solid",
               borderColor: "action.selected",
             }}
