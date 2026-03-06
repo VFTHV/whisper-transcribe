@@ -79,6 +79,7 @@ export const handler: Handler = async (
     }
 
     let audioBuffer: Buffer | null = null;
+    let audioFilename = "recording.webm";
     let apiKey = "";
     let model = "";
 
@@ -95,7 +96,10 @@ export const handler: Handler = async (
       } else if (headers.includes('name="model"')) {
         model = content.toString().trim().replace(/\r\n$/, "");
       } else if (headers.includes('name="audio"')) {
-        // Remove trailing CRLF if present
+        const filenameMatch = headers.match(/filename="([^"]+)"/);
+        if (filenameMatch) {
+          audioFilename = filenameMatch[1];
+        }
         const contentStr = content.toString("binary");
         const cleanContent = contentStr.replace(/\r\n$/, "");
         audioBuffer = Buffer.from(cleanContent, "binary");
@@ -137,8 +141,10 @@ export const handler: Handler = async (
     // Create a File object for OpenAI API (copy Buffer to Uint8Array for BlobPart compatibility)
     const uint8 = new Uint8Array(audioBuffer.length);
     uint8.set(audioBuffer);
-    const audioFile = new File([uint8], "recording.webm", {
-      type: "audio/webm",
+    const isMp4 =
+      audioFilename.endsWith(".m4a") || audioFilename.endsWith(".mp4");
+    const audioFile = new File([uint8], audioFilename, {
+      type: isMp4 ? "audio/mp4" : "audio/webm",
     });
 
     const allowedModels = [

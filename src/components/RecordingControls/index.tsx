@@ -21,6 +21,19 @@ const recordBlink = keyframes`
   25%, 75% { opacity: 0.7; transform: scale(1.05); }
 `;
 
+const getSupportedMimeType = (): string => {
+  const types = [
+    "audio/webm;codecs=opus",
+    "audio/webm",
+    "audio/mp4",
+    "audio/mp4;codecs=mp4a",
+  ];
+  for (const type of types) {
+    if (MediaRecorder.isTypeSupported(type)) return type;
+  }
+  return "";
+};
+
 type Props = {
   setTranscription: (newTranscription: string) => void;
   setError: (error: string) => void;
@@ -62,7 +75,10 @@ const RecordingControls = ({
     }
   };
 
-  const sendAudioToServer = async (audioBlob: Blob) => {
+  const sendAudioToServer = async (
+    audioBlob: Blob,
+    filename: string = "recording.webm"
+  ) => {
     if (!apiKey.trim()) {
       setError("Please enter your OpenAI API key before recording.");
       return;
@@ -73,7 +89,7 @@ const RecordingControls = ({
 
     try {
       const formData = new FormData();
-      formData.append("audio", audioBlob, "recording.webm");
+      formData.append("audio", audioBlob, filename);
       formData.append("apiKey", apiKey);
       formData.append("model", model);
 
@@ -112,9 +128,9 @@ const RecordingControls = ({
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm;codecs=opus",
-      });
+      const mimeType = getSupportedMimeType();
+      const options = mimeType ? { mimeType } : {};
+      const mediaRecorder = new MediaRecorder(stream, options);
 
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
@@ -128,10 +144,17 @@ const RecordingControls = ({
 
       mediaRecorder.onstop = async () => {
         if (shouldProcessRef.current) {
+          const recorderMimeType = mediaRecorder.mimeType || "audio/webm";
+          const blobType = recorderMimeType.split(";")[0];
+          const extension =
+            blobType === "audio/mp4" ? "m4a" : "webm";
           const audioBlob = new Blob(audioChunksRef.current, {
-            type: "audio/webm",
+            type: blobType,
           });
-          await sendAudioToServer(audioBlob);
+          await sendAudioToServer(
+            audioBlob,
+            `recording.${extension}`
+          );
         }
         stopStream();
       };
