@@ -110,7 +110,11 @@ const RecordingControls = ({
         setError(result.error || "Transcription failed");
       }
     } catch (err) {
-      setError("Failed to transcribe audio. Please try again.");
+      setError(
+        !navigator.onLine
+          ? "You're offline. Transcription requires an internet connection."
+          : "Failed to transcribe audio. Please try again."
+      );
       console.error("Transcription error:", err);
     } finally {
       setIsProcessing(false);
@@ -120,6 +124,11 @@ const RecordingControls = ({
   const startRecording = async () => {
     if (!apiKey.trim()) {
       setError("Please enter your OpenAI API key before recording.");
+      return;
+    }
+
+    if (!navigator.onLine) {
+      setError("You're offline. Transcription requires an internet connection.");
       return;
     }
 

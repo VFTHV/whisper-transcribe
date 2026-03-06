@@ -23,10 +23,24 @@ function App() {
   const [transcriptionHistory, setTranscriptionHistory] = useState<
     TranscriptionRecord[]
   >([]);
+  const [isOnline, setIsOnline] = useState(
+    typeof navigator !== "undefined" ? navigator.onLine : true
+  );
 
   useEffect(() => {
     const history = getTranscriptions();
     setTranscriptionHistory(history);
+  }, []);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
   }, []);
 
   const handleNewTranscription = (newTranscription: string) => {
@@ -54,6 +68,26 @@ function App() {
         pt: { xs: 5, sm: 6 },
       }}
     >
+      {!isOnline && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            py: 1,
+            px: 2,
+            bgcolor: "warning.main",
+            color: "warning.contrastText",
+            textAlign: "center",
+            zIndex: 1300,
+          }}
+        >
+          <Typography variant="body2">
+            You're offline. Transcription requires an internet connection.
+          </Typography>
+        </Box>
+      )}
       <Container maxWidth="sm" disableGutters>
         <Paper
           elevation={2}
