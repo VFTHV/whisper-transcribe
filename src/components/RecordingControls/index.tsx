@@ -1,10 +1,12 @@
 import { useState, useRef } from "react";
-import { Box, IconButton, Stack } from "@mui/material";
+import { Box, IconButton, Stack, Button, Alert } from "@mui/material";
 import {
   FiberManualRecord,
   PlayArrow,
   Pause,
   Cancel,
+  Refresh,
+  Download,
 } from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
 
@@ -39,6 +41,7 @@ const RecordingControls = ({
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [failedRecording, setFailedRecording] = useState<Blob | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
@@ -65,6 +68,7 @@ const RecordingControls = ({
   const sendAudioToServer = async (audioBlob: Blob) => {
     if (!apiKey.trim()) {
       setError("Please enter your OpenAI API key before recording.");
+      setFailedRecording(audioBlob);
       return;
     }
 
@@ -90,12 +94,15 @@ const RecordingControls = ({
 
       if (result.success) {
         onTranscriptionComplete(result.transcription);
+        setFailedRecording(null);
       } else {
         setError(result.error || "Transcription failed");
+        setFailedRecording(audioBlob);
       }
     } catch (err) {
       setError("Failed to transcribe audio. Please try again.");
       console.error("Transcription error:", err);
+      setFailedRecording(audioBlob);
     } finally {
       setIsProcessing(false);
     }
@@ -186,6 +193,29 @@ const RecordingControls = ({
       setIsPaused(false);
       audioChunksRef.current = [];
     }
+  };
+
+  const retryTranscription = async () => {
+    if (failedRecording) {
+      await sendAudioToServer(failedRecording);
+    }
+  };
+
+  const downloadRecording = () => {
+    if (failedRecording) {
+      const url = URL.createObjectURL(failedRecording);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `recording-${new Date().toISOString()}.webm`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const dismissFailedRecording = () => {
+    setFailedRecording(null);
   };
 
   const iconSx = {
@@ -309,6 +339,38 @@ const RecordingControls = ({
         <Stack direction="row" justifyContent="center">
           <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
         </Stack>
+
+        {failedRecording && (
+          <Alert
+            severity="warning"
+            onClose={dismissFailedRecording}
+            sx={{ mt: 2 }}
+          >
+            Recording saved! The transcription request failed, but your
+            recording is preserved.
+            <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<Refresh />}
+                onClick={retryTranscription}
+                disabled={isProcessing}
+                sx={{ flex: 1 }}
+              >
+                Retry
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Download />}
+                onClick={downloadRecording}
+                sx={{ flex: 1 }}
+              >
+                Download
+              </Button>
+            </Stack>
+          </Alert>
+        )}
       </Stack>
     </>
   );
