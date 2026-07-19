@@ -216,6 +216,7 @@ const RecordingControls = ({
 
   const dismissFailedRecording = () => {
     setFailedRecording(null);
+    setError("");
   };
 
   const iconSx = {
