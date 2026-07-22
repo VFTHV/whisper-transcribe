@@ -7,31 +7,31 @@ import {
   Typography,
   Link,
 } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { settingsActions } from "../../features/settings/slice/reducers";
+import { selectApiKey } from "../../features/settings/slice/selectors";
 
 type Props = {
-  setApiKey: (apiKey: string) => void;
   onSubmitted?: () => void;
 };
 
-const ApiKeySection = ({ setApiKey, onSubmitted }: Props) => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+const ApiKeySection = ({ onSubmitted }: Props) => {
+  const dispatch = useAppDispatch();
+  const apiKey = useAppSelector(selectApiKey);
+  const isSubmitted = Boolean(apiKey.trim());
   const [tempApiKey, setTempApiKey] = useState("");
 
   const handleSubmit = () => {
     if (tempApiKey.trim()) {
-      setApiKey(tempApiKey);
-      setIsSubmitted(true);
+      dispatch(settingsActions.setApiKey(tempApiKey));
       setTempApiKey("");
-      if (onSubmitted) {
-        onSubmitted();
-      }
+      onSubmitted?.();
     }
   };
 
   const handleReenter = () => {
-    setIsSubmitted(false);
     setTempApiKey("");
-    setApiKey("");
+    dispatch(settingsActions.setApiKey(""));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -68,7 +68,9 @@ const ApiKeySection = ({ setApiKey, onSubmitted }: Props) => {
           </Button>
         </Box>
       ) : (
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
+        <Box
+          sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}
+        >
           <Button variant="outlined" onClick={handleReenter}>
             Re-enter API Key
           </Button>

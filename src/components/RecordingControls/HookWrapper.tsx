@@ -1,8 +1,11 @@
 import { useHotkeys } from "react-hotkeys-hook";
+import { useAppSelector } from "../../store/hooks";
+import {
+  selectIsPaused,
+  selectIsRecording,
+} from "../../features/recording/slice/selectors";
 
 type Props = {
-  isRecording: boolean;
-  isPaused: boolean;
   startRecording: () => void;
   stopRecording: () => void;
   pauseRecording: () => void;
@@ -11,15 +14,15 @@ type Props = {
 };
 
 const HookWrapper = ({
-  isRecording,
-  isPaused,
   startRecording,
   stopRecording,
   pauseRecording,
   resumeRecording,
   cancelRecording,
 }: Props) => {
-  // Global hotkey for recording
+  const isRecording = useAppSelector(selectIsRecording);
+  const isPaused = useAppSelector(selectIsPaused);
+
   useHotkeys(
     "ctrl+k",
     (e) => {
@@ -33,7 +36,6 @@ const HookWrapper = ({
     { enableOnFormTags: true }
   );
 
-  // Escape key to cancel recording
   useHotkeys(
     "escape",
     (e) => {
@@ -45,7 +47,6 @@ const HookWrapper = ({
     { enableOnFormTags: true }
   );
 
-  // Spacebar to pause/resume recording
   useHotkeys(
     "space",
     (e) => {

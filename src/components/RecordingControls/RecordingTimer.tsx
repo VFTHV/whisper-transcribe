@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Box, Typography } from "@mui/material";
 import { Mic, Pause } from "@mui/icons-material";
+import { useAppSelector } from "../../store/hooks";
+import {
+  selectIsPaused,
+  selectIsRecording,
+} from "../../features/recording/slice/selectors";
 
-type Props = {
-  isRecording: boolean;
-  isPaused: boolean;
-};
-
-const RecordingTimer = ({ isRecording, isPaused }: Props) => {
+const RecordingTimer = () => {
+  const isRecording = useAppSelector(selectIsRecording);
+  const isPaused = useAppSelector(selectIsPaused);
   const [recordingTime, setRecordingTime] = useState(0);
   const recordingStartTimeRef = useRef<number>(0);
   const totalPausedTimeRef = useRef<number>(0);
