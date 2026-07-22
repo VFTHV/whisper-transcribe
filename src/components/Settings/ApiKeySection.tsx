@@ -97,7 +97,7 @@ const ApiKeySection = ({ onSubmitted }: Props) => {
           borderRadius: 1,
           px: 2,
           py: 1,
-          bgcolor: "action.hover",
+          bgcolor: "surfaceContainer.low",
         }}
       >
         Check API Usage & Credits

@@ -21,7 +21,7 @@ const InstructionsAccordion = ({ expanded, onChange }: Props) => {
       disableGutters
       square
       sx={{
-        bgcolor: "action.hover",
+        bgcolor: "surfaceContainer.low",
         border: "1px solid",
         borderColor: "primary.main",
         borderTopLeftRadius: 2,
@@ -50,7 +50,7 @@ const InstructionsAccordion = ({ expanded, onChange }: Props) => {
         <Typography
           variant="body2"
           sx={{
-            bgcolor: "action.hover",
+            bgcolor: "surfaceContainer.low",
             p: 1.5,
             borderRadius: 1,
             border: "1px solid",

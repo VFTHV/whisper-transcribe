@@ -1,12 +1,8 @@
 import { useMemo, useState, useEffect } from 'react'
-import {
-  ThemeProvider,
-  createTheme,
-  CssBaseline,
-  IconButton,
-  Box,
-} from '@mui/material'
-import { Brightness4, Brightness7 } from '@mui/icons-material'
+import { ThemeProvider, CssBaseline } from '@mui/material'
+import type { PaletteMode } from '@mui/material'
+import { getAppTheme } from '../theme/theme'
+import { ColorModeContext } from '../theme/ColorModeContext'
 
 const THEME_MODE_KEY = 'whisper-transcribe-theme-mode'
 
@@ -15,8 +11,8 @@ type Props = {
 }
 
 const ThemeWrapper = ({ children }: Props) => {
-  const [mode, setMode] = useState<'light' | 'dark'>(() => {
-    const stored = localStorage.getItem(THEME_MODE_KEY) as 'light' | 'dark' | null
+  const [mode, setMode] = useState<PaletteMode>(() => {
+    const stored = localStorage.getItem(THEME_MODE_KEY) as PaletteMode | null
     return stored === 'light' || stored === 'dark' ? stored : 'light'
   })
 
@@ -24,44 +20,23 @@ const ThemeWrapper = ({ children }: Props) => {
     localStorage.setItem(THEME_MODE_KEY, mode)
   }, [mode])
 
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-          primary: {
-            main: '#FF3334',
-          },
-          ...(mode === 'light'
-            ? {}
-            : {
-                background: {
-                  default: '#121212',
-                  paper: '#1e1e1e',
-                },
-              }),
-        },
-        typography: {
-          fontFamily: '"Exo 2", sans-serif',
-        },
-      }),
+  const theme = useMemo(() => getAppTheme(mode), [mode])
+
+  const colorMode = useMemo(
+    () => ({
+      mode,
+      toggleMode: () => setMode((m) => (m === 'light' ? 'dark' : 'light')),
+    }),
     [mode]
   )
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ position: 'relative', minHeight: '100vh' }}>
-        <IconButton
-          onClick={() => setMode((m) => (m === 'light' ? 'dark' : 'light'))}
-          sx={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}
-          title={mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-        >
-          {mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
-        </IconButton>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
         {children}
-      </Box>
-    </ThemeProvider>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   )
 }
 

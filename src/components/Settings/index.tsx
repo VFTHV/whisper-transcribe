@@ -10,6 +10,7 @@ import {
   Select,
   MenuItem,
   Stack,
+  useTheme,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import ApiKeySection from "./ApiKeySection";
@@ -28,6 +29,7 @@ const Settings = () => {
   const dispatch = useAppDispatch();
   const model = useAppSelector(selectModel);
   const [expanded, setExpanded] = useState<string | false>(false);
+  const theme = useTheme();
 
   const handleChange =
     (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
@@ -43,7 +45,7 @@ const Settings = () => {
           sx={{
             fontWeight: 700,
             mb: 1,
-            background: "linear-gradient(135deg, #FF3334, #E02A2B)",
+            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
             backgroundClip: "text",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
@@ -69,7 +71,7 @@ const Settings = () => {
           disableGutters
           square
           sx={{
-            bgcolor: "action.hover",
+            bgcolor: "surfaceContainer.low",
             border: "1px solid",
             borderColor: "primary.main",
             ...(expanded !== "instructions" && {
