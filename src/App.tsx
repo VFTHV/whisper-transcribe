@@ -1,51 +1,22 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Box, Container, Paper, Typography } from "@mui/material";
 import Settings from "./components/Settings";
-import type { TranscriptionModelId } from "./components/Settings/transcriptionModels";
 import TranscriptionEditor from "./components/TranscriptionEditor";
 import RecordingControls from "./components/RecordingControls";
 import TranscriptionActions from "./components/TranscriptionActions";
 import ErrorDisplay from "./components/ErrorDisplay";
 import TranscriptionHistory from "./components/TranscriptionHistory";
-import {
-  saveTranscription,
-  getTranscriptions,
-  deleteTranscription,
-  TranscriptionRecord,
-} from "./utils/transcriptionStorage";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { transcriptionActions } from "./features/transcription/slice/reducers";
+import { selectTranscriptionText } from "./features/transcription/slice/selectors";
 
-function App() {
-  const [transcription, setTranscription] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [isCopied, setIsCopied] = useState(false);
-  const [apiKey, setApiKey] = useState<string>("");
-  const [model, setModel] = useState<TranscriptionModelId>("whisper-1");
-  const [transcriptionHistory, setTranscriptionHistory] = useState<
-    TranscriptionRecord[]
-  >([]);
+const App = () => {
+  const dispatch = useAppDispatch();
+  const transcription = useAppSelector(selectTranscriptionText);
 
   useEffect(() => {
-    const history = getTranscriptions();
-    setTranscriptionHistory(history);
-  }, []);
-
-  const handleNewTranscription = (newTranscription: string) => {
-    setTranscription(newTranscription);
-    const savedRecord = saveTranscription(newTranscription);
-    if (savedRecord) {
-      setTranscriptionHistory((prev) => [savedRecord, ...prev]);
-    }
-  };
-
-  const handleDeleteTranscription = (id: string) => {
-    deleteTranscription(id);
-    setTranscriptionHistory((prev) => prev.filter((t) => t.id !== id));
-  };
-
-  const clearTranscription = () => {
-    setTranscription("");
-    setError("");
-  };
+    dispatch(transcriptionActions.hydrateHistory());
+  }, [dispatch]);
 
   return (
     <Box
@@ -65,17 +36,11 @@ function App() {
             gap: 2,
           }}
         >
-          <Settings setApiKey={setApiKey} model={model} setModel={setModel} />
+          <Settings />
 
-          <RecordingControls
-            setTranscription={handleNewTranscription}
-            setError={setError}
-            setIsCopied={setIsCopied}
-            apiKey={apiKey}
-            model={model}
-          />
+          <RecordingControls />
 
-          <ErrorDisplay error={error} setError={setError} />
+          <ErrorDisplay />
 
           {transcription && (
             <Box
@@ -96,28 +61,17 @@ function App() {
                 }}
               >
                 <Typography variant="h6">Transcription</Typography>
-                <TranscriptionActions
-                  transcription={transcription}
-                  onClear={clearTranscription}
-                  isCopied={isCopied}
-                  setIsCopied={setIsCopied}
-                />
+                <TranscriptionActions />
               </Box>
-              <TranscriptionEditor
-                value={transcription}
-                onChange={setTranscription}
-              />
+              <TranscriptionEditor />
             </Box>
           )}
 
-          <TranscriptionHistory
-            transcriptions={transcriptionHistory}
-            onDeleteTranscription={handleDeleteTranscription}
-          />
+          <TranscriptionHistory />
         </Paper>
       </Container>
     </Box>
   );
-}
+};
 
 export default App;

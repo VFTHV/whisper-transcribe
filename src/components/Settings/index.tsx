@@ -20,14 +20,13 @@ import {
   TRANSCRIPTION_MODEL_DESCRIPTIONS,
   type TranscriptionModelId,
 } from "./transcriptionModels";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { settingsActions } from "../../features/settings/slice/reducers";
+import { selectModel } from "../../features/settings/slice/selectors";
 
-type Props = {
-  setApiKey: (apiKey: string) => void;
-  model: TranscriptionModelId;
-  setModel: (model: TranscriptionModelId) => void;
-};
-
-const Settings = ({ setApiKey, model, setModel }: Props) => {
+const Settings = () => {
+  const dispatch = useAppDispatch();
+  const model = useAppSelector(selectModel);
   const [expanded, setExpanded] = useState<string | false>(false);
 
   const handleChange =
@@ -111,7 +110,11 @@ const Settings = ({ setApiKey, model, setModel }: Props) => {
                     value={model}
                     label="Transcription model"
                     onChange={(e) =>
-                      setModel(e.target.value as TranscriptionModelId)
+                      dispatch(
+                        settingsActions.setModel(
+                          e.target.value as TranscriptionModelId
+                        )
+                      )
                     }
                   >
                     {TRANSCRIPTION_MODEL_IDS.map((id) => (
@@ -129,10 +132,7 @@ const Settings = ({ setApiKey, model, setModel }: Props) => {
                   {TRANSCRIPTION_MODEL_DESCRIPTIONS[model]}
                 </Typography>
               </Box>
-              <ApiKeySection
-                setApiKey={setApiKey}
-                onSubmitted={() => setExpanded(false)}
-              />
+              <ApiKeySection onSubmitted={() => setExpanded(false)} />
             </Stack>
           </AccordionDetails>
         </Accordion>

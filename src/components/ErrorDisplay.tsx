@@ -1,19 +1,24 @@
 import { Alert, IconButton } from "@mui/material";
 import { Close } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { transcriptionActions } from "../features/transcription/slice/reducers";
+import { selectTranscriptionError } from "../features/transcription/slice/selectors";
 
-type Props = {
-  error: string;
-  setError: React.Dispatch<React.SetStateAction<string>>;
-};
+const ErrorDisplay = () => {
+  const dispatch = useAppDispatch();
+  const error = useAppSelector(selectTranscriptionError);
 
-const ErrorDisplay = ({ error, setError }: Props) => {
   if (!error) return null;
 
   return (
     <Alert
       severity="error"
       action={
-        <IconButton size="small" onClick={() => setError("")} title="Close error">
+        <IconButton
+          size="small"
+          onClick={() => dispatch(transcriptionActions.setError(""))}
+          title="Close error"
+        >
           <Close fontSize="small" />
         </IconButton>
       }

@@ -1,24 +1,24 @@
 import { Button, IconButton, Box } from "@mui/material";
 import { Check, ContentCopy } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { transcriptionActions } from "../features/transcription/slice/reducers";
+import {
+  selectIsCopied,
+  selectTranscriptionText,
+} from "../features/transcription/slice/selectors";
 
-type Props = {
-  transcription: string;
-  onClear: () => void;
-  isCopied: boolean;
-  setIsCopied: React.Dispatch<React.SetStateAction<boolean>>;
-};
+const TranscriptionActions = () => {
+  const dispatch = useAppDispatch();
+  const transcription = useAppSelector(selectTranscriptionText);
+  const isCopied = useAppSelector(selectIsCopied);
 
-const TranscriptionActions = ({
-  transcription,
-  onClear,
-  isCopied,
-  setIsCopied,
-}: Props) => {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(transcription);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000);
+      dispatch(transcriptionActions.setIsCopied(true));
+      setTimeout(() => {
+        dispatch(transcriptionActions.setIsCopied(false));
+      }, 2000);
     } catch (err) {
       console.error("Failed to copy to clipboard:", err);
     }
@@ -33,7 +33,10 @@ const TranscriptionActions = ({
       >
         {isCopied ? <Check /> : <ContentCopy />}
       </IconButton>
-      <Button variant="outlined" onClick={onClear}>
+      <Button
+        variant="outlined"
+        onClick={() => dispatch(transcriptionActions.clearTranscription())}
+      >
         Clear
       </Button>
     </Box>

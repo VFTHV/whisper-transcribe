@@ -11,18 +11,14 @@ import { Check, ContentCopy, Delete } from "@mui/icons-material";
 import {
   MIN_WORDS,
   STORED_TRANSCRIPTIONS,
-  TranscriptionRecord,
 } from "../utils/transcriptionStorage";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { transcriptionActions } from "../features/transcription/slice/reducers";
+import { selectTranscriptionHistory } from "../features/transcription/slice/selectors";
 
-type Props = {
-  transcriptions: TranscriptionRecord[];
-  onDeleteTranscription: (id: string) => void;
-};
-
-const TranscriptionHistory = ({
-  transcriptions,
-  onDeleteTranscription,
-}: Props) => {
+const TranscriptionHistory = () => {
+  const dispatch = useAppDispatch();
+  const transcriptions = useAppSelector(selectTranscriptionHistory);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const copyToClipboard = async (text: string, id: string) => {
@@ -56,7 +52,12 @@ const TranscriptionHistory = ({
 
   return (
     <Box>
-      <Typography variant="subtitle1" fontWeight={600} textAlign="center" sx={{ mb: 1 }}>
+      <Typography
+        variant="subtitle1"
+        fontWeight={600}
+        textAlign="center"
+        sx={{ mb: 1 }}
+      >
         Previous {STORED_TRANSCRIPTIONS} Transcriptions (minimum {MIN_WORDS}{" "}
         words)
       </Typography>
@@ -113,7 +114,11 @@ const TranscriptionHistory = ({
                 </IconButton>
                 <IconButton
                   size="small"
-                  onClick={() => onDeleteTranscription(transcription.id)}
+                  onClick={() =>
+                    dispatch(
+                      transcriptionActions.removeTranscription(transcription.id)
+                    )
+                  }
                   title="Delete transcription"
                   color="error"
                 >
