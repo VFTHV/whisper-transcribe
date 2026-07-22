@@ -25,10 +25,12 @@ const recordBlink = keyframes`
   25%, 75% { opacity: 0.7; transform: scale(1.05); }
 `;
 
-enum PendingSource {
-  Upload = "upload",
-  Recording = "recording",
-}
+const PendingSource = {
+  Upload: "upload",
+  Recording: "recording",
+} as const;
+
+type PendingSource = (typeof PendingSource)[keyof typeof PendingSource];
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
