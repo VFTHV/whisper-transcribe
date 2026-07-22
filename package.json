@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "netlify dev",
     "dev:vite": "vite",
+    "start": "netlify dev",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
