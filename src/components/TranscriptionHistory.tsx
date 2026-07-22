@@ -68,7 +68,7 @@ const TranscriptionHistory = () => {
           border: "1px solid",
           borderColor: "divider",
           borderRadius: 1,
-          bgcolor: "action.hover",
+          bgcolor: "surfaceContainer.low",
           py: 0,
         }}
       >

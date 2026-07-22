@@ -261,7 +261,7 @@ const RecordingControls = () => {
           borderRadius: 2,
           border: "2px solid",
           borderColor: "divider",
-          bgcolor: "action.hover",
+          bgcolor: "surfaceContainer.low",
         }}
       >
         <RecordingToolbar
