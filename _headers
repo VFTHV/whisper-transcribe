@@ -3,7 +3,7 @@
   Access-Control-Allow-Headers: Content-Type
   Access-Control-Allow-Methods: GET, POST, OPTIONS
 
-/api/*
+/.netlify/functions/*
   Access-Control-Allow-Origin: *
   Access-Control-Allow-Headers: Content-Type
   Access-Control-Allow-Methods: GET, POST, OPTIONS

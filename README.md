@@ -1,152 +1,80 @@
-# 🎤 Whisper Transcribe
+# Whisper Transcribe
 
-A beautiful voice-to-text transcription application built with React, Express, and OpenAI's Whisper API. Record your voice and get instant transcription, just like ChatGPT's voice input feature.
+Voice-to-text transcription app built with React, Vite, Material UI, and OpenAI Whisper via Netlify Functions. Record audio in the browser and get a transcription using your own OpenAI API key.
 
-## ✨ Features
+## Stack
 
-- 🎙️ **Voice Recording**: Click to start/stop recording with visual feedback
-- 🔄 **Real-time Processing**: See processing status with animated spinner
-- 📝 **Instant Transcription**: Get your speech converted to text using OpenAI Whisper
-- 🎨 **Modern UI**: Beautiful, responsive design with smooth animations
-- 📱 **Mobile Friendly**: Works perfectly on desktop and mobile devices
-- 🧹 **Easy Management**: Clear transcriptions with one click
+- React 19 + TypeScript + Vite
+- Material UI (Exo 2)
+- Netlify Functions (`health`, `transcribe`)
+- OpenAI Whisper / GPT-4o transcribe models
+- Google Analytics 4 (Firebase)
 
-## 🚀 Quick Start
+## Commands
 
-### Prerequisites
+```bash
+npm install
+npm start          # Netlify Dev (frontend + functions) on http://localhost:8888
+npm run build      # production build → dist/
+npm run lint
+```
 
-- Node.js (v16 or higher)
-- OpenAI API key
+| Command | Use |
+| --- | --- |
+| `npm start` | Local development (`netlify dev`). Vite + Functions on port **8888**. |
+| `npm run build` | What Netlify runs on deploy after merge to **`master`**. Publishes `dist`. |
 
-### Setup
+Do **not** set the Netlify production build command to `npm start` — that only runs the local Netlify Dev server.
 
-1. **Clone the repository**
+## Live site
 
-   ```bash
-   git clone <repository-url>
-   cd whisper-transcribe
-   ```
+- Production: https://whisper-stt.netlify.app
+- Admin: https://app.netlify.com/projects/whisper-stt
 
-2. **Install dependencies**
+## Netlify site
 
-   ```bash
-   npm install
-   ```
+- Site name: `whisper-stt`
+- Site ID: `3bcd8573-959d-43b0-b5aa-8f3d6360aaf2`
+- Team: VFTHV's team (`vfthv`)
+- Default subdomain: `whisper-stt.netlify.app`
+- Repo: `VFTHV/whisper-transcribe` → branch `master` → build `npm run build` → publish `dist`
+- Functions: `netlify/functions`
+- Local config: [`netlify.toml`](netlify.toml) (`[dev]` port `8888`)
 
-3. **Set up environment variables**
-   Create a `.env` file in the root directory:
+After merge to `master`, Netlify CI builds with `npm run build` and deploys `dist` plus serverless functions. Local work uses `npm start`.
 
-   ```env
-   OPENAI_API_KEY=your_openai_api_key_here
-   PORT=3001
-   ```
+## Environment
 
-4. **Start the development servers**
+Users enter their OpenAI API key in the app UI (stored client-side). No server-side `OPENAI_API_KEY` is required for production deploy.
 
-   ```bash
-   npm run dev:all
-   ```
+Optional local `.env` (for Netlify Functions when testing without the UI key):
 
-   This will start both:
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+```
 
-   - Frontend (React) on `http://localhost:5173`
-   - Backend (Express) on `http://localhost:3001`
+## API endpoints
 
-### Alternative Commands
+- `GET /.netlify/functions/health` — health check
+- `POST /.netlify/functions/transcribe` — multipart audio transcription
 
-- **Frontend only**: `npm run dev`
-- **Backend only**: `npm run dev:server`
-- **Build for production**: `npm run build`
+## Firebase / Analytics
 
-## 🎯 How to Use
+GA4 is loaded via gtag in [`index.html`](index.html) (same pattern as Medovik). Netlify hosts the site; Firebase is used for Analytics only.
 
-1. **Open the application** in your browser at `http://localhost:5173`
-2. **Click "Start Recording"** to begin recording your voice
-3. **Speak clearly** into your microphone
-4. **Click "Stop Recording"** when you're done speaking
-5. **Wait for processing** - you'll see a spinner while the audio is being transcribed
-6. **View your transcription** - the text will appear below the recording button
-7. **Clear the transcription** if you want to start fresh
+| Field | Value |
+| --- | --- |
+| Project ID | `vfthv-whisper-stt` |
+| Display name | Whisper STT |
+| Web app ID | `1:1039927906280:web:0d1c11e2ee83dbd8cade5d` |
+| Measurement ID | `G-H4GFDC0W0C` |
+| Console | https://console.firebase.google.com/project/vfthv-whisper-stt |
+| Analytics | https://console.firebase.google.com/project/vfthv-whisper-stt/analytics |
 
-## 🛠️ Technical Stack
+Local alias: [`.firebaserc`](.firebaserc) defaults to `vfthv-whisper-stt`.
 
-### Frontend
+> Note: Project IDs `whisper-stt` and `whisper-transcribe` were already taken globally, so the Firebase project is `vfthv-whisper-stt`. The Netlify site remains `whisper-stt`.
 
-- **React 19** with TypeScript
-- **Vite** for fast development and building
-- **Modern CSS** with animations and responsive design
-- **MediaRecorder API** for browser-based audio recording
+## License
 
-### Backend
-
-- **Express.js** with TypeScript
-- **OpenAI Whisper API** for speech-to-text transcription
-- **Multer** for file upload handling
-- **CORS** enabled for cross-origin requests
-
-### Key Features
-
-- **Audio Format**: Records in WebM format for optimal quality
-- **Error Handling**: Comprehensive error handling and user feedback
-- **File Management**: Automatic cleanup of uploaded audio files
-- **Security**: Proper file type validation and API key management
-
-## 🔧 Configuration
-
-### Environment Variables
-
-| Variable         | Description                         | Required |
-| ---------------- | ----------------------------------- | -------- |
-| `OPENAI_API_KEY` | Your OpenAI API key                 | Yes      |
-| `PORT`           | Backend server port (default: 3001) | No       |
-
-### API Endpoints
-
-- `GET /api/health` - Health check endpoint
-- `POST /api/transcribe` - Audio transcription endpoint
-
-## 🎨 Customization
-
-The application uses a modern gradient design that can be easily customized:
-
-- **Colors**: Edit the CSS variables in `src/App.css`
-- **Animations**: Modify the keyframe animations for different effects
-- **Layout**: Adjust the container and component styles
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Microphone not working**
-
-   - Ensure your browser has permission to access the microphone
-   - Check if another application is using the microphone
-
-2. **Transcription fails**
-
-   - Verify your OpenAI API key is correct
-   - Check the browser console for error messages
-   - Ensure the backend server is running
-
-3. **CORS errors**
-   - Make sure the backend is running on the correct port
-   - Check that the frontend is making requests to the correct URL
-
-### Browser Compatibility
-
-- **Chrome/Edge**: Full support
-- **Firefox**: Full support
-- **Safari**: Full support
-- **Mobile browsers**: Full support
-
-## 📝 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📞 Support
-
-If you encounter any issues or have questions, please open an issue on GitHub.
+MIT

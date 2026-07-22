@@ -1,10 +1,14 @@
 import { useState, useRef } from "react";
-import { Box, IconButton, Stack } from "@mui/material";
+import { Box, IconButton, Stack, Button, Alert } from "@mui/material";
 import {
   FiberManualRecord,
   PlayArrow,
   Pause,
   Cancel,
+  Refresh,
+  Download,
+  Upload,
+  Mic,
 } from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
 
@@ -20,6 +24,13 @@ const recordBlink = keyframes`
   0%, 50% { opacity: 1; transform: scale(1); }
   25%, 75% { opacity: 0.7; transform: scale(1.05); }
 `;
+
+const PendingSource = {
+  Upload: "upload",
+  Recording: "recording",
+} as const;
+
+type PendingSource = (typeof PendingSource)[keyof typeof PendingSource];
 
 type Props = {
   setTranscription: (newTranscription: string) => void;
@@ -39,10 +50,17 @@ const RecordingControls = ({
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [pendingAudio, setPendingAudio] = useState<Blob | null>(null);
+  const [pendingSource, setPendingSource] = useState<PendingSource | null>(
+    null
+  );
+  const [pendingFileName, setPendingFileName] = useState<string>("");
+  const [hasFailedAttempt, setHasFailedAttempt] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const shouldProcessRef = useRef<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const onTranscriptionComplete = async (newTranscription: string) => {
     setTranscription(newTranscription);
@@ -62,9 +80,32 @@ const RecordingControls = ({
     }
   };
 
-  const sendAudioToServer = async (audioBlob: Blob) => {
+  const clearPendingAudio = () => {
+    setPendingAudio(null);
+    setPendingSource(null);
+    setPendingFileName("");
+    setHasFailedAttempt(false);
+  };
+
+  const preservePendingAudio = (
+    audioBlob: Blob,
+    fileName: string,
+    source: PendingSource
+  ) => {
+    setPendingAudio(audioBlob);
+    setPendingFileName(fileName);
+    setPendingSource(source);
+    setHasFailedAttempt(true);
+  };
+
+  const sendAudioToServer = async (
+    audioBlob: Blob,
+    fileName = "recording.webm",
+    source: PendingSource = PendingSource.Recording
+  ) => {
     if (!apiKey.trim()) {
       setError("Please enter your OpenAI API key before recording.");
+      preservePendingAudio(audioBlob, fileName, source);
       return;
     }
 
@@ -73,7 +114,7 @@ const RecordingControls = ({
 
     try {
       const formData = new FormData();
-      formData.append("audio", audioBlob, "recording.webm");
+      formData.append("audio", audioBlob, fileName);
       formData.append("apiKey", apiKey);
       formData.append("model", model);
 
@@ -90,12 +131,15 @@ const RecordingControls = ({
 
       if (result.success) {
         onTranscriptionComplete(result.transcription);
+        clearPendingAudio();
       } else {
         setError(result.error || "Transcription failed");
+        preservePendingAudio(audioBlob, fileName, source);
       }
     } catch (err) {
       setError("Failed to transcribe audio. Please try again.");
       console.error("Transcription error:", err);
+      preservePendingAudio(audioBlob, fileName, source);
     } finally {
       setIsProcessing(false);
     }
@@ -131,7 +175,11 @@ const RecordingControls = ({
           const audioBlob = new Blob(audioChunksRef.current, {
             type: "audio/webm",
           });
-          await sendAudioToServer(audioBlob);
+          await sendAudioToServer(
+            audioBlob,
+            "recording.webm",
+            PendingSource.Recording
+          );
         }
         stopStream();
       };
@@ -188,11 +236,63 @@ const RecordingControls = ({
     }
   };
 
+  const transcribePendingAudio = async () => {
+    if (pendingAudio) {
+      await sendAudioToServer(
+        pendingAudio,
+        pendingFileName || "recording.webm",
+        pendingSource ?? PendingSource.Recording
+      );
+    }
+  };
+
+  const downloadRecording = () => {
+    if (pendingAudio) {
+      const url = URL.createObjectURL(pendingAudio);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download =
+        pendingFileName || `recording-${new Date().toISOString()}.webm`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const dismissPendingAudio = () => {
+    clearPendingAudio();
+    setError("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const openFilePicker = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setPendingAudio(file);
+    setPendingSource(PendingSource.Upload);
+    setPendingFileName(file.name);
+    setHasFailedAttempt(false);
+    setError("");
+  };
+
   const iconSx = {
     fontSize: 32,
     transition: "all 0.2s ease",
   };
   const disabledSx = { opacity: 0.3, cursor: "not-allowed" };
+  const canUpload = !isRecording && !isProcessing;
+  const isUploadPending =
+    pendingSource === PendingSource.Upload && !hasFailedAttempt;
 
   return (
     <>
@@ -204,6 +304,14 @@ const RecordingControls = ({
         pauseRecording={pauseRecording}
         resumeRecording={resumeRecording}
         cancelRecording={cancelRecording}
+      />
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="audio/*,.webm,.mp3,.wav,.m4a,.ogg,.mp4"
+        hidden
+        onChange={handleFileUpload}
       />
 
       <Stack
@@ -304,11 +412,60 @@ const RecordingControls = ({
           >
             <Cancel sx={{ fontSize: 32 }} />
           </IconButton>
+
+          <IconButton
+            onClick={canUpload ? openFilePicker : undefined}
+            disabled={!canUpload}
+            sx={{
+              color: canUpload ? "primary.main" : "grey.500",
+              "&:hover:not(:disabled)": { color: "primary.light" },
+              ...iconSx,
+              ...(!canUpload ? disabledSx : {}),
+            }}
+            title="Upload Audio"
+          >
+            <Upload sx={{ fontSize: 32 }} />
+          </IconButton>
         </Stack>
 
         <Stack direction="row" justifyContent="center">
           <RecordingTimer isRecording={isRecording} isPaused={isPaused} />
         </Stack>
+
+        {pendingAudio && (
+          <Alert
+            severity={isUploadPending ? "info" : "warning"}
+            onClose={dismissPendingAudio}
+            sx={{ mt: 2 }}
+          >
+            {isUploadPending
+              ? `Audio ready: ${pendingFileName || "uploaded file"}`
+              : pendingSource === PendingSource.Upload
+                ? `Transcription failed for ${pendingFileName || "uploaded file"}. You can retry or download.`
+                : "Recording saved! The transcription request failed, but your recording is preserved."}
+            <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={isUploadPending ? <Mic /> : <Refresh />}
+                onClick={transcribePendingAudio}
+                disabled={isProcessing}
+                sx={{ flex: 1 }}
+              >
+                {isUploadPending ? "Transcribe" : "Retry"}
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Download />}
+                onClick={downloadRecording}
+                sx={{ flex: 1 }}
+              >
+                Download
+              </Button>
+            </Stack>
+          </Alert>
+        )}
       </Stack>
     </>
   );

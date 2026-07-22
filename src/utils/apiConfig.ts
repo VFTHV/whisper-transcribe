@@ -1,6 +1,6 @@
 // API configuration - always uses Netlify functions
 export const getApiUrl = (endpoint: string): string => {
-  return `/api${endpoint}`;
+  return `/.netlify/functions${endpoint}`;
 };
 
 export const API_ENDPOINTS = {
