@@ -4,11 +4,13 @@ import type { TranscriptionModelId } from "../../../components/Settings/transcri
 export type SettingsState = {
   apiKey: string;
   model: TranscriptionModelId;
+  prompt: string;
 };
 
 const initialState: SettingsState = {
   apiKey: "",
   model: "whisper-1",
+  prompt: "",
 };
 
 const settingsSlice = createSlice({
@@ -20,6 +22,9 @@ const settingsSlice = createSlice({
     },
     setModel: (state, action: PayloadAction<TranscriptionModelId>) => {
       state.model = action.payload;
+    },
+    setPrompt: (state, action: PayloadAction<string>) => {
+      state.prompt = action.payload;
     },
   },
 });

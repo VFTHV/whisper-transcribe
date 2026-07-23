@@ -1,7 +1,11 @@
 import { createAsyncAction } from "async-selector-kit";
 import type { RootState } from "../../../../store";
 import { getApiUrl, API_ENDPOINTS } from "../../../../utils/apiConfig";
-import { selectApiKey, selectModel } from "../../../settings/slice/selectors";
+import {
+  selectApiKey,
+  selectModel,
+  selectPrompt,
+} from "../../../settings/slice/selectors";
 import { transcriptionActions } from "../reducers";
 
 type Params = {
@@ -19,11 +23,11 @@ export const [
   transcribeAudio,
   selectTranscribeAudioLoading,
   selectTranscribeAudioError,
-] = createAsyncAction<RootState, void, Params, string, string>(
+] = createAsyncAction<RootState, void, Params, string, string, string>(
   {
     id: "transcribeAudio",
     async:
-      (store, _status, apiKey, model) =>
+      (store, _status, apiKey, model, prompt) =>
       async ({ audioBlob, fileName }) => {
         store.dispatch(transcriptionActions.setError(""));
 
@@ -31,6 +35,7 @@ export const [
         formData.append("audio", audioBlob, fileName);
         formData.append("apiKey", apiKey);
         formData.append("model", model);
+        formData.append("prompt", prompt);
 
         let response: Response;
         try {
@@ -80,5 +85,5 @@ export const [
         }
       },
   },
-  [selectApiKey, selectModel]
+  [selectApiKey, selectModel, selectPrompt]
 );
