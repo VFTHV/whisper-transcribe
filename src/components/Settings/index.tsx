@@ -10,6 +10,7 @@ import {
   Select,
   MenuItem,
   Stack,
+  TextField,
   useTheme,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
@@ -23,11 +24,15 @@ import {
 } from "./transcriptionModels";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { settingsActions } from "../../features/settings/slice/reducers";
-import { selectModel } from "../../features/settings/slice/selectors";
+import {
+  selectModel,
+  selectPrompt,
+} from "../../features/settings/slice/selectors";
 
 const Settings = () => {
   const dispatch = useAppDispatch();
   const model = useAppSelector(selectModel);
+  const prompt = useAppSelector(selectPrompt);
   const [expanded, setExpanded] = useState<string | false>(false);
   const theme = useTheme();
 
@@ -132,6 +137,28 @@ const Settings = () => {
                   sx={{ mt: 0.5 }}
                 >
                   {TRANSCRIPTION_MODEL_DESCRIPTIONS[model]}
+                </Typography>
+              </Box>
+              <Box>
+                <TextField
+                  label="Transcription prompt"
+                  placeholder="e.g. This transcription is about cooking recipes with terms like sous-vide and mise en place."
+                  value={prompt}
+                  onChange={(e) =>
+                    dispatch(settingsActions.setPrompt(e.target.value))
+                  }
+                  fullWidth
+                  multiline
+                  minRows={2}
+                  size="small"
+                />
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mt: 0.5 }}
+                >
+                  Optional. Guides the model on vocabulary and context. Leave
+                  empty to use the default React/TypeScript-focused prompt.
                 </Typography>
               </Box>
               <ApiKeySection onSubmitted={() => setExpanded(false)} />
