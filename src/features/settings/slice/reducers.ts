@@ -1,16 +1,21 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { TranscriptionModelId } from "../../../components/Settings/transcriptionModels";
+import type {
+  TranscriptionModelId,
+  TranscriptionModelMetadata,
+} from "../../../components/Settings/transcriptionModels";
 
 export type SettingsState = {
   apiKey: string;
   model: TranscriptionModelId;
   prompt: string;
+  models: TranscriptionModelMetadata[];
 };
 
 const initialState: SettingsState = {
   apiKey: "",
-  model: "whisper-1",
+  model: "",
   prompt: "",
+  models: [],
 };
 
 const settingsSlice = createSlice({
@@ -25,6 +30,9 @@ const settingsSlice = createSlice({
     },
     setPrompt: (state, action: PayloadAction<string>) => {
       state.prompt = action.payload;
+    },
+    setModels: (state, action: PayloadAction<TranscriptionModelMetadata[]>) => {
+      state.models = action.payload;
     },
   },
 });

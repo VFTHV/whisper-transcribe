@@ -6,4 +6,5 @@ export const getApiUrl = (endpoint: string): string => {
 export const API_ENDPOINTS = {
   TRANSCRIBE: "/transcribe",
   HEALTH: "/health",
+  MODELS: "/models",
 } as const;
