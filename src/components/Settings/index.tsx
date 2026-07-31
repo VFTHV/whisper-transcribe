@@ -16,25 +16,31 @@ import {
 import { ExpandMore } from "@mui/icons-material";
 import ApiKeySection from "./ApiKeySection";
 import InstructionsAccordion from "./InstructionsAccordion";
-import {
-  TRANSCRIPTION_MODEL_IDS,
-  TRANSCRIPTION_MODEL_LABELS,
-  TRANSCRIPTION_MODEL_DESCRIPTIONS,
-  type TranscriptionModelId,
-} from "./transcriptionModels";
+import type { TranscriptionModelId } from "./transcriptionModels";
+import { useFetchTranscriptionModels } from "./useFetchTranscriptionModels";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { settingsActions } from "../../features/settings/slice/reducers";
 import {
   selectModel,
+  selectModels,
+  selectModelsError,
+  selectModelsStatus,
   selectPrompt,
 } from "../../features/settings/slice/selectors";
 
 const Settings = () => {
   const dispatch = useAppDispatch();
   const model = useAppSelector(selectModel);
+  const models = useAppSelector(selectModels);
+  const modelsStatus = useAppSelector(selectModelsStatus);
+  const modelsError = useAppSelector(selectModelsError);
   const prompt = useAppSelector(selectPrompt);
   const [expanded, setExpanded] = useState<string | false>(false);
   const theme = useTheme();
+
+  useFetchTranscriptionModels();
+
+  const selectedModelMetadata = models.find((m) => m.id === model);
 
   const handleChange =
     (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
@@ -108,13 +114,18 @@ const Settings = () => {
           >
             <Stack spacing={2}>
               <Box>
-                <FormControl fullWidth size="small" sx={{ minWidth: 200 }}>
+                <FormControl
+                  fullWidth
+                  size="small"
+                  sx={{ minWidth: 200 }}
+                  disabled={modelsStatus === "loading" || models.length === 0}
+                >
                   <InputLabel id="transcription-model-label">
                     Transcription model
                   </InputLabel>
                   <Select
                     labelId="transcription-model-label"
-                    value={model}
+                    value={models.some((m) => m.id === model) ? model : ""}
                     label="Transcription model"
                     onChange={(e) =>
                       dispatch(
@@ -124,19 +135,23 @@ const Settings = () => {
                       )
                     }
                   >
-                    {TRANSCRIPTION_MODEL_IDS.map((id) => (
+                    {models.map(({ id, label }) => (
                       <MenuItem key={id} value={id}>
-                        {TRANSCRIPTION_MODEL_LABELS[id]}
+                        {label}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
                 <Typography
                   variant="body2"
-                  color="text.secondary"
+                  color={modelsError ? "error" : "text.secondary"}
                   sx={{ mt: 0.5 }}
                 >
-                  {TRANSCRIPTION_MODEL_DESCRIPTIONS[model]}
+                  {modelsError ||
+                    (modelsStatus === "loading"
+                      ? "Loading transcription models…"
+                      : selectedModelMetadata &&
+                        `$${selectedModelMetadata.pricePerMinuteUsd.toFixed(3)}/min · ${selectedModelMetadata.description}`)}
                 </Typography>
               </Box>
               <Box>
