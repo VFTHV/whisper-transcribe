@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Accordion,
   AccordionSummary,
@@ -17,28 +17,32 @@ import { ExpandMore } from "@mui/icons-material";
 import ApiKeySection from "./ApiKeySection";
 import InstructionsAccordion from "./InstructionsAccordion";
 import type { TranscriptionModelId } from "./transcriptionModels";
-import { useFetchTranscriptionModels } from "./useFetchTranscriptionModels";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { settingsActions } from "../../features/settings/slice/reducers";
 import {
   selectModel,
   selectModels,
-  selectModelsError,
-  selectModelsStatus,
   selectPrompt,
 } from "../../features/settings/slice/selectors";
+import {
+  fetchTranscriptionModels,
+  selectFetchTranscriptionModelsError,
+  selectFetchTranscriptionModelsLoading,
+} from "../../features/settings/slice/command/fetchTranscriptionModels";
 
 const Settings = () => {
   const dispatch = useAppDispatch();
   const model = useAppSelector(selectModel);
   const models = useAppSelector(selectModels);
-  const modelsStatus = useAppSelector(selectModelsStatus);
-  const modelsError = useAppSelector(selectModelsError);
+  const modelsLoading = useAppSelector(selectFetchTranscriptionModelsLoading);
+  const modelsError = useAppSelector(selectFetchTranscriptionModelsError);
   const prompt = useAppSelector(selectPrompt);
   const [expanded, setExpanded] = useState<string | false>(false);
   const theme = useTheme();
 
-  useFetchTranscriptionModels();
+  useEffect(() => {
+    fetchTranscriptionModels();
+  }, []);
 
   const selectedModelMetadata = models.find((m) => m.id === model);
 
@@ -118,7 +122,7 @@ const Settings = () => {
                   fullWidth
                   size="small"
                   sx={{ minWidth: 200 }}
-                  disabled={modelsStatus === "loading" || models.length === 0}
+                  disabled={modelsLoading || models.length === 0}
                 >
                   <InputLabel id="transcription-model-label">
                     Transcription model
@@ -147,11 +151,12 @@ const Settings = () => {
                   color={modelsError ? "error" : "text.secondary"}
                   sx={{ mt: 0.5 }}
                 >
-                  {modelsError ||
-                    (modelsStatus === "loading"
+                  {modelsError
+                    ? "Failed to load transcription models."
+                    : modelsLoading
                       ? "Loading transcription models…"
                       : selectedModelMetadata &&
-                        `$${selectedModelMetadata.pricePerMinuteUsd.toFixed(3)}/min · ${selectedModelMetadata.description}`)}
+                        `$${selectedModelMetadata.pricePerMinuteUsd.toFixed(3)}/min · ${selectedModelMetadata.description}`}
                 </Typography>
               </Box>
               <Box>
