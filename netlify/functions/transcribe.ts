@@ -154,7 +154,7 @@ export const handler: Handler = async (
       model && allowedModels.includes(model) ? model : "whisper-1";
 
     const DEFAULT_PROMPT =
-      "This transcription is about React code with TypeScript, JavaScript, sometimes using reselect library, async selector kit library, and also having Express server. The content includes code snippets, function names, variable names, and programming terminology.";
+      "React TypeScript JavaScript. Reselect, async-selector-kit, Express. Code snippets, fn names, var names, programming terms. Sound like 'cloud' → Claude.";
     const transcriptionPrompt = prompt ? prompt : DEFAULT_PROMPT;
 
     // Send to OpenAI Whisper API (diarize model does not support prompt)
