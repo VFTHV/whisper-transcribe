@@ -1,35 +1,21 @@
-import { useState } from "react";
 import {
   Box,
   Typography,
   List,
   ListItem,
   ListItemText,
-  IconButton,
 } from "@mui/material";
-import { Check, ContentCopy, Delete } from "@mui/icons-material";
 import {
   MIN_WORDS,
   STORED_TRANSCRIPTIONS,
-} from "../utils/transcriptionStorage";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { transcriptionActions } from "../features/transcription/slice/reducers";
-import { selectTranscriptionHistory } from "../features/transcription/slice/selectors";
+} from "../../utils/transcriptionStorage";
+import { useAppSelector } from "../../store/hooks";
+import { selectTranscriptionHistory } from "../../features/transcription/slice/selectors";
+import CopyButton from "./CopyButton";
+import DeleteButton from "./DeleteButton";
 
 const TranscriptionHistory = () => {
-  const dispatch = useAppDispatch();
   const transcriptions = useAppSelector(selectTranscriptionHistory);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  const copyToClipboard = async (text: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    } catch (err) {
-      console.error("Failed to copy to clipboard:", err);
-    }
-  };
 
   if (transcriptions.length === 0) {
     return (
@@ -94,36 +80,8 @@ const TranscriptionHistory = () => {
                 {transcription.date}
               </Typography>
               <Box>
-                <IconButton
-                  size="small"
-                  onClick={() =>
-                    copyToClipboard(transcription.text, transcription.id)
-                  }
-                  color={copiedId === transcription.id ? "success" : "default"}
-                  title={
-                    copiedId === transcription.id
-                      ? "Copied!"
-                      : "Copy to clipboard"
-                  }
-                >
-                  {copiedId === transcription.id ? (
-                    <Check fontSize="small" />
-                  ) : (
-                    <ContentCopy fontSize="small" />
-                  )}
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() =>
-                    dispatch(
-                      transcriptionActions.removeTranscription(transcription.id)
-                    )
-                  }
-                  title="Delete transcription"
-                  color="error"
-                >
-                  <Delete fontSize="small" />
-                </IconButton>
+                <CopyButton text={transcription.text} />
+                <DeleteButton id={transcription.id} />
               </Box>
             </Box>
             <ListItemText
