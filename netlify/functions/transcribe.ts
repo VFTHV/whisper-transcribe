@@ -1,5 +1,6 @@
 import { Handler, HandlerEvent, HandlerResponse } from "@netlify/functions";
 import OpenAI from "openai";
+import { TRANSCRIPTION_MODELS } from "./shared/transcriptionModels";
 
 export const handler: Handler = async (
   event: HandlerEvent
@@ -144,25 +145,21 @@ export const handler: Handler = async (
       type: "audio/webm",
     });
 
-    const allowedModels = [
-      "whisper-1",
-      "gpt-4o-transcribe",
-      "gpt-4o-mini-transcribe",
-      "gpt-4o-transcribe-diarize",
-    ];
-    const transcriptionModel =
-      model && allowedModels.includes(model) ? model : "whisper-1";
+    const defaultModel = TRANSCRIPTION_MODELS[0];
+    const selectedModel =
+      TRANSCRIPTION_MODELS.find((m) => m.id === model) ?? defaultModel;
+    const transcriptionModel = selectedModel.id;
 
     const DEFAULT_PROMPT =
       "React TypeScript JavaScript. Reselect, async-selector-kit, Express. Code snippets, fn names, var names, programming terms. Sound like 'cloud' → Claude.";
     const transcriptionPrompt = prompt ? prompt : DEFAULT_PROMPT;
 
-    // Send to OpenAI Whisper API (diarize model does not support prompt)
+    // Send to OpenAI Whisper API (some models, e.g. diarize, don't support prompt)
     const createOptions = {
       file: audioFile,
       model: transcriptionModel,
       response_format: "json" as const,
-      ...(transcriptionModel !== "gpt-4o-transcribe-diarize" && {
+      ...(selectedModel.supportsPrompt && {
         prompt: transcriptionPrompt,
       }),
     };

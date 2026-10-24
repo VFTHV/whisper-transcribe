@@ -10,6 +10,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { settingsActions } from "../../features/settings/slice/reducers";
 import { selectApiKey } from "../../features/settings/slice/selectors";
+import { fetchTranscriptionModels } from "../../features/settings/slice/command/fetchTranscriptionModels";
 
 type Props = {
   onSubmitted?: () => void;
@@ -25,6 +26,8 @@ const ApiKeySection = ({ onSubmitted }: Props) => {
     if (tempApiKey.trim()) {
       dispatch(settingsActions.setApiKey(tempApiKey));
       setTempApiKey("");
+      // Re-fetch so the model list reflects what this key actually has access to.
+      fetchTranscriptionModels();
       onSubmitted?.();
     }
   };
@@ -32,6 +35,7 @@ const ApiKeySection = ({ onSubmitted }: Props) => {
   const handleReenter = () => {
     setTempApiKey("");
     dispatch(settingsActions.setApiKey(""));
+    fetchTranscriptionModels();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
