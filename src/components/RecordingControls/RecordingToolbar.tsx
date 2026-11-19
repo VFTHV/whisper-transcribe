@@ -87,10 +87,11 @@ const RecordingToolbar = ({
             },
             ...iconSx,
           }}
-          title={withHotkey(
-            isRecording ? "Stop Recording" : "Start Recording",
-            "toggleRecording"
-          )}
+          title={
+            isRecording
+              ? withHotkey("Stop Recording", "finishRecording")
+              : withHotkey("Start Recording", "startOrPause")
+          }
         >
           <FiberManualRecord sx={{ fontSize: 36 }} />
         </IconButton>
@@ -105,7 +106,7 @@ const RecordingToolbar = ({
           ...iconSx,
           ...(isProcessing || !isRecording || !isPaused ? disabledSx : {}),
         }}
-        title={withHotkey("Resume Recording", "togglePause")}
+        title={withHotkey("Resume Recording", "startOrPause")}
       >
         <PlayArrow sx={{ fontSize: 32 }} />
       </IconButton>
@@ -121,7 +122,7 @@ const RecordingToolbar = ({
           ...iconSx,
           ...(isProcessing || !isRecording || isPaused ? disabledSx : {}),
         }}
-        title={withHotkey("Pause Recording", "togglePause")}
+        title={withHotkey("Pause Recording", "startOrPause")}
       >
         <Pause sx={{ fontSize: 32 }} />
       </IconButton>

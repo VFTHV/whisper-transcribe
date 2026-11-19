@@ -6,10 +6,10 @@
  * here, so changing a key in one place updates everything.
  */
 export const HOTKEYS = {
-  /** Starts a recording, or stops (and transcribes) the active one. */
-  toggleRecording: { keys: "ctrl+k", label: "Ctrl+K" },
-  /** Pauses the active recording, or resumes a paused one. */
-  togglePause: { keys: "space", label: "Space" },
+  /** Starts a recording; while recording, pauses it or resumes a paused one. */
+  startOrPause: { keys: "space", label: "Space" },
+  /** Finishes the active recording and sends it for transcription. */
+  finishRecording: { keys: "enter", label: "Enter" },
   /** Discards the active recording. */
   cancelRecording: { keys: "escape", label: "Esc" },
 } as const;

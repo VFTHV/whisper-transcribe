@@ -72,9 +72,9 @@ const InstructionsAccordion = ({ expanded, onChange }: Props) => {
               fontFamily: "monospace",
             }}
           >
-            {HOTKEYS.toggleRecording.label}
+            {HOTKEYS.startOrPause.label}
           </Box>{" "}
-          to start/stop recording (works even when tab is not active). Press{" "}
+          to start recording, and to pause or resume it. Press{" "}
           <Box
             component="kbd"
             sx={{
@@ -87,9 +87,9 @@ const InstructionsAccordion = ({ expanded, onChange }: Props) => {
               fontFamily: "monospace",
             }}
           >
-            {HOTKEYS.togglePause.label}
+            {HOTKEYS.finishRecording.label}
           </Box>{" "}
-          to pause/resume recording. Press{" "}
+          to finish and transcribe. Press{" "}
           <Box
             component="kbd"
             sx={{
