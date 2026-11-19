@@ -131,7 +131,7 @@ const RecordingControls = () => {
       if (document.hidden) {
         if ("Notification" in window && Notification.permission === "granted") {
           new Notification("Recording Started", {
-            body: `Voice recording is now active. Press ${HOTKEYS.toggleRecording.label} to stop.`,
+            body: `Voice recording is now active. Press ${HOTKEYS.finishRecording.label} to stop.`,
             icon: "/vite.svg",
           });
         }

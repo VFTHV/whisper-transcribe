@@ -26,47 +26,43 @@ const HookWrapper = ({
   const isPaused = useAppSelector(selectIsPaused);
   const isProcessing = useAppSelector(selectTranscribeAudioLoading);
 
-  useHotkeys(
-    HOTKEYS.toggleRecording.keys,
-    (e) => {
-      e.preventDefault();
-      if (e.repeat || isProcessing) return;
-      if (isRecording) {
-        stopRecording();
-      } else {
-        startRecording();
-      }
-    },
-    { enableOnFormTags: true }
-  );
+  // Space: start recording, or pause/resume while recording.
+  useHotkeys(HOTKEYS.startOrPause.keys, (e) => {
+    // Always block the browser default so Space never scrolls the page.
+    e.preventDefault();
+    // Drop focus from a focused button/link so the browser's own Space
+    // "click" on keyup doesn't fire a second action.
+    const target = e.target as HTMLElement | null;
+    if (target?.closest("button, a, [role='button']")) target.blur();
+    if (e.repeat || isProcessing) return;
 
+    if (!isRecording) {
+      startRecording();
+    } else if (isPaused) {
+      resumeRecording();
+    } else {
+      pauseRecording();
+    }
+  });
+
+  // Enter: finish the recording and transcribe it.
+  useHotkeys(HOTKEYS.finishRecording.keys, (e) => {
+    if (!isRecording) return;
+    // Stops Enter from also clicking a focused button.
+    e.preventDefault();
+    if (!e.repeat) stopRecording();
+  });
+
+  // Escape: cancel the recording.
   useHotkeys(
     HOTKEYS.cancelRecording.keys,
     (e) => {
-      if (isRecording && !e.repeat) {
+      if (isRecording) {
         e.preventDefault();
-        cancelRecording();
+        if (!e.repeat) cancelRecording();
       }
     },
     { enableOnFormTags: true }
-  );
-
-  useHotkeys(
-    HOTKEYS.togglePause.keys,
-    (e) => {
-      // Space natively activates a focused button/link; don't double-fire.
-      const target = e.target as HTMLElement | null;
-      if (target?.closest("button, a, [role='button']")) return;
-      if (isRecording && !e.repeat) {
-        e.preventDefault();
-        if (isPaused) {
-          resumeRecording();
-        } else {
-          pauseRecording();
-        }
-      }
-    },
-    {}
   );
 
   return null;
