@@ -12,6 +12,7 @@ import {
   selectIsPaused,
   selectIsRecording,
 } from "../../features/recording/slice/selectors";
+import { withHotkey } from "../../config/hotkeys";
 import { selectTranscribeAudioLoading } from "../../features/transcription/slice/command/transcribeAudio";
 
 const spin = keyframes`
@@ -86,7 +87,10 @@ const RecordingToolbar = ({
             },
             ...iconSx,
           }}
-          title={isRecording ? "Stop Recording" : "Start Recording"}
+          title={withHotkey(
+            isRecording ? "Stop Recording" : "Start Recording",
+            "toggleRecording"
+          )}
         >
           <FiberManualRecord sx={{ fontSize: 36 }} />
         </IconButton>
@@ -101,7 +105,7 @@ const RecordingToolbar = ({
           ...iconSx,
           ...(isProcessing || !isRecording || !isPaused ? disabledSx : {}),
         }}
-        title="Resume Recording"
+        title={withHotkey("Resume Recording", "togglePause")}
       >
         <PlayArrow sx={{ fontSize: 32 }} />
       </IconButton>
@@ -117,7 +121,7 @@ const RecordingToolbar = ({
           ...iconSx,
           ...(isProcessing || !isRecording || isPaused ? disabledSx : {}),
         }}
-        title="Pause Recording"
+        title={withHotkey("Pause Recording", "togglePause")}
       >
         <Pause sx={{ fontSize: 32 }} />
       </IconButton>
@@ -131,7 +135,7 @@ const RecordingToolbar = ({
           ...iconSx,
           ...(isProcessing || !isRecording ? disabledSx : {}),
         }}
-        title="Cancel Recording"
+        title={withHotkey("Cancel Recording", "cancelRecording")}
       >
         <Cancel sx={{ fontSize: 32 }} />
       </IconButton>

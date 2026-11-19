@@ -6,6 +6,7 @@ import {
   Box,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
+import { HOTKEYS } from "../../config/hotkeys";
 
 type Props = {
   expanded: boolean;
@@ -71,7 +72,7 @@ const InstructionsAccordion = ({ expanded, onChange }: Props) => {
               fontFamily: "monospace",
             }}
           >
-            Ctrl+K
+            {HOTKEYS.toggleRecording.label}
           </Box>{" "}
           to start/stop recording (works even when tab is not active). Press{" "}
           <Box
@@ -86,7 +87,7 @@ const InstructionsAccordion = ({ expanded, onChange }: Props) => {
               fontFamily: "monospace",
             }}
           >
-            Space
+            {HOTKEYS.togglePause.label}
           </Box>{" "}
           to pause/resume recording. Press{" "}
           <Box
@@ -101,7 +102,7 @@ const InstructionsAccordion = ({ expanded, onChange }: Props) => {
               fontFamily: "monospace",
             }}
           >
-            Escape
+            {HOTKEYS.cancelRecording.label}
           </Box>{" "}
           to cancel recording.
         </Typography>
