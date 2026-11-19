@@ -18,6 +18,7 @@ import {
   selectPendingSource,
 } from "../../features/recording/slice/selectors";
 import { transcriptionActions } from "../../features/transcription/slice/reducers";
+import { HOTKEYS } from "../../config/hotkeys";
 import { transcribeAudio } from "../../features/transcription/slice/command/transcribeAudio";
 
 const RecordingControls = () => {
@@ -130,7 +131,7 @@ const RecordingControls = () => {
       if (document.hidden) {
         if ("Notification" in window && Notification.permission === "granted") {
           new Notification("Recording Started", {
-            body: "Voice recording is now active. Press Ctrl+K to stop.",
+            body: `Voice recording is now active. Press ${HOTKEYS.toggleRecording.label} to stop.`,
             icon: "/vite.svg",
           });
         }

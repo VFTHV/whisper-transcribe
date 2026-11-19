@@ -4,6 +4,8 @@ import {
   selectIsPaused,
   selectIsRecording,
 } from "../../features/recording/slice/selectors";
+import { selectTranscribeAudioLoading } from "../../features/transcription/slice/command/transcribeAudio";
+import { HOTKEYS } from "../../config/hotkeys";
 
 type Props = {
   startRecording: () => void;
@@ -22,11 +24,13 @@ const HookWrapper = ({
 }: Props) => {
   const isRecording = useAppSelector(selectIsRecording);
   const isPaused = useAppSelector(selectIsPaused);
+  const isProcessing = useAppSelector(selectTranscribeAudioLoading);
 
   useHotkeys(
-    "ctrl+k",
+    HOTKEYS.toggleRecording.keys,
     (e) => {
       e.preventDefault();
+      if (e.repeat || isProcessing) return;
       if (isRecording) {
         stopRecording();
       } else {
@@ -37,9 +41,9 @@ const HookWrapper = ({
   );
 
   useHotkeys(
-    "escape",
+    HOTKEYS.cancelRecording.keys,
     (e) => {
-      if (isRecording) {
+      if (isRecording && !e.repeat) {
         e.preventDefault();
         cancelRecording();
       }
@@ -48,9 +52,12 @@ const HookWrapper = ({
   );
 
   useHotkeys(
-    "space",
+    HOTKEYS.togglePause.keys,
     (e) => {
-      if (isRecording) {
+      // Space natively activates a focused button/link; don't double-fire.
+      const target = e.target as HTMLElement | null;
+      if (target?.closest("button, a, [role='button']")) return;
+      if (isRecording && !e.repeat) {
         e.preventDefault();
         if (isPaused) {
           resumeRecording();
@@ -59,7 +66,7 @@ const HookWrapper = ({
         }
       }
     },
-    { enableOnFormTags: true }
+    {}
   );
 
   return null;
